@@ -1,0 +1,441 @@
+{
+ "description": "Blind grading of ETS-rated TOEFL responses by three Claude models under three rule sets. Scores are the ETS-lens task score (0-5). 'ref' is ETS's level for the item: a single value when ETS states or describes it, a range when it is inferred (Overview high-level samples) or set by design (synthetic controls). No ETS text is included.",
+ "date": "2026-11-20",
+ "models": {
+  "opus": "Claude Opus 5.5",
+  "sonnet": "Claude Sonnet 5.5",
+  "haiku": "Claude Haiku 5.5"
+ },
+ "conditions": {
+  "old": "rules before calibration (git state of 2026-10-23)",
+  "new": "calibrated rules (current skill files)",
+  "clean": "calibrated rules with every description of the calibration samples removed (ablation)"
+ },
+ "items": [
+  {
+   "id": "T8M",
+   "source": "Guide ch. 5, track 49",
+   "task": "interview",
+   "ref": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "J4S",
+   "source": "Guide ch. 5, track 50",
+   "task": "interview",
+   "ref": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "F8G",
+   "source": "Guide ch. 5, track 51",
+   "task": "interview",
+   "ref": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "G6J",
+   "source": "Guide ch. 5, track 52",
+   "task": "interview",
+   "ref": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "T7N",
+   "source": "Guide practice test, track 91",
+   "task": "interview",
+   "ref": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "H6D",
+   "source": "Guide practice test, track 92",
+   "task": "interview",
+   "ref": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "M2F",
+   "source": "Guide practice test, track 93",
+   "task": "interview",
+   "ref": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "P8P",
+   "source": "Guide practice test, track 94",
+   "task": "interview",
+   "ref": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "N8P",
+   "source": "Guide p. 209 (food truck email)",
+   "task": "email",
+   "ref": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "P2X",
+   "source": "Guide p. 218 (boarding schools AD)",
+   "task": "discussion",
+   "ref": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "Z5P",
+   "source": "Guide p. 216 (content-free fragment)",
+   "task": "discussion",
+   "ref": [
+    1,
+    2
+   ]
+  },
+  {
+   "id": "K8V",
+   "source": "Guide p. 216 (memorized text)",
+   "task": "discussion",
+   "ref": [
+    1,
+    2
+   ]
+  },
+  {
+   "id": "C8P",
+   "source": "Guide p. 333 (workshop email)",
+   "task": "email",
+   "ref": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "C7V",
+   "source": "Guide p. 334 (history AD)",
+   "task": "discussion",
+   "ref": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "T9R",
+   "source": "Overview high-level email (poetry magazine)",
+   "task": "email",
+   "ref": [
+    4,
+    5
+   ]
+  },
+  {
+   "id": "L8P",
+   "source": "Overview high-level AD (volunteering, ~80 words)",
+   "task": "discussion",
+   "ref": [
+    4,
+    5
+   ]
+  },
+  {
+   "id": "B9C",
+   "source": "synthetic control: weak, choppy, ~30 words",
+   "task": "interview",
+   "ref": [
+    2,
+    3
+   ]
+  },
+  {
+   "id": "W6F",
+   "source": "synthetic control: frequent basic errors, ~70 words",
+   "task": "interview",
+   "ref": [
+    3,
+    4
+   ]
+  },
+  {
+   "id": "J4D",
+   "source": "synthetic control: email with one point missing, errors pile up",
+   "task": "email",
+   "ref": [
+    2,
+    3
+   ]
+  }
+ ],
+ "runs": {
+  "haiku_clean_1": {
+   "T7N": 5,
+   "K8V": 2,
+   "T9R": 4,
+   "T8M": 4,
+   "N8P": 4,
+   "J4S": 4,
+   "P2X": 5,
+   "W6F": 3,
+   "J4D": 2,
+   "M2F": 5,
+   "G6J": 5,
+   "Z5P": 2,
+   "B9C": 3,
+   "L8P": 4,
+   "H6D": 5,
+   "F8G": 5,
+   "C8P": 4,
+   "P8P": 5,
+   "C7V": 4
+  },
+  "haiku_new_1": {
+   "G6J": 5,
+   "F8G": 5,
+   "W6F": 4,
+   "N8P": 5,
+   "C8P": 5,
+   "P8P": 5,
+   "K8V": 2,
+   "T8M": 5,
+   "P2X": 5,
+   "C7V": 5,
+   "T7N": 5,
+   "B9C": 3,
+   "M2F": 5,
+   "H6D": 5,
+   "J4D": 3,
+   "Z5P": 1,
+   "L8P": 5,
+   "T9R": 4,
+   "J4S": 5
+  },
+  "haiku_new_2": {
+   "J4D": 2,
+   "G6J": 5,
+   "Z5P": 2,
+   "P8P": 4,
+   "J4S": 5,
+   "N8P": 5,
+   "H6D": 4,
+   "K8V": 2,
+   "W6F": 4,
+   "C7V": 4,
+   "T8M": 4,
+   "T9R": 4,
+   "L8P": 5,
+   "T7N": 5,
+   "M2F": 5,
+   "C8P": 5,
+   "F8G": 5,
+   "P2X": 5,
+   "B9C": 3
+  },
+  "haiku_old_1": {
+   "L8P": 4,
+   "Z5P": 1,
+   "M2F": 4,
+   "K8V": 2,
+   "J4S": 4,
+   "B9C": 2,
+   "N8P": 3,
+   "G6J": 4,
+   "H6D": 3,
+   "T9R": 3,
+   "C8P": 3,
+   "F8G": 4,
+   "T7N": 4,
+   "W6F": 3,
+   "T8M": 4,
+   "P2X": 4,
+   "C7V": 3,
+   "P8P": 3,
+   "J4D": 2
+  },
+  "opus_clean_1": {
+   "T7N": 5,
+   "K8V": 1,
+   "T9R": 5,
+   "T8M": 5,
+   "N8P": 4,
+   "J4S": 5,
+   "P2X": 5,
+   "W6F": 3,
+   "J4D": 2,
+   "M2F": 5,
+   "G6J": 5,
+   "Z5P": 1,
+   "B9C": 2,
+   "L8P": 4,
+   "H6D": 5,
+   "F8G": 5,
+   "C8P": 4,
+   "P8P": 5,
+   "C7V": 5
+  },
+  "opus_new_1": {
+   "G6J": 5,
+   "F8G": 5,
+   "W6F": 3,
+   "N8P": 5,
+   "C8P": 5,
+   "K8V": 2,
+   "P8P": 5,
+   "T8M": 5,
+   "P2X": 5,
+   "C7V": 5,
+   "T7N": 5,
+   "B9C": 2,
+   "M2F": 5,
+   "H6D": 5,
+   "J4D": 2,
+   "Z5P": 1,
+   "L8P": 4,
+   "T9R": 5,
+   "J4S": 5
+  },
+  "opus_new_2": {
+   "J4D": 2,
+   "G6J": 5,
+   "Z5P": 1,
+   "P8P": 5,
+   "J4S": 5,
+   "N8P": 5,
+   "H6D": 5,
+   "K8V": 1,
+   "W6F": 3,
+   "C7V": 5,
+   "T8M": 5,
+   "T9R": 5,
+   "L8P": 4,
+   "T7N": 5,
+   "M2F": 5,
+   "C8P": 5,
+   "F8G": 5,
+   "P2X": 5,
+   "B9C": 2
+  },
+  "opus_old_1": {
+   "L8P": 3,
+   "Z5P": 2,
+   "M2F": 5,
+   "K8V": 2,
+   "J4S": 5,
+   "B9C": 2,
+   "N8P": 4,
+   "G6J": 5,
+   "H6D": 5,
+   "T9R": 4,
+   "C8P": 4,
+   "F8G": 5,
+   "T7N": 5,
+   "W6F": 3,
+   "T8M": 5,
+   "P2X": 4,
+   "C7V": 3,
+   "P8P": 5,
+   "J4D": 2
+  },
+  "sonnet_clean_1": {
+   "T7N": 5,
+   "K8V": 2,
+   "T9R": 4,
+   "T8M": 4,
+   "N8P": 4,
+   "J4S": 5,
+   "P2X": 5,
+   "W6F": 3,
+   "J4D": 3,
+   "M2F": 5,
+   "G6J": 5,
+   "Z5P": 2,
+   "B9C": 2,
+   "L8P": 4,
+   "H6D": 5,
+   "F8G": 5,
+   "C8P": 5,
+   "P8P": 4,
+   "C7V": 4
+  },
+  "sonnet_new_1": {
+   "G6J": 5,
+   "F8G": 5,
+   "W6F": 3,
+   "N8P": 5,
+   "C8P": 5,
+   "P8P": 5,
+   "K8V": 2,
+   "T8M": 5,
+   "P2X": 5,
+   "C7V": 5,
+   "T7N": 5,
+   "B9C": 2,
+   "M2F": 5,
+   "H6D": 5,
+   "J4D": 3,
+   "Z5P": 1,
+   "L8P": 4,
+   "T9R": 5,
+   "J4S": 5
+  },
+  "sonnet_new_2": {
+   "J4D": 3,
+   "G6J": 5,
+   "Z5P": 1,
+   "P8P": 5,
+   "J4S": 5,
+   "N8P": 5,
+   "H6D": 5,
+   "K8V": 2,
+   "W6F": 3,
+   "C7V": 5,
+   "T8M": 5,
+   "T9R": 5,
+   "L8P": 4,
+   "T7N": 5,
+   "M2F": 5,
+   "C8P": 5,
+   "F8G": 5,
+   "P2X": 5,
+   "B9C": 1
+  },
+  "sonnet_old_1": {
+   "L8P": 4,
+   "Z5P": 2,
+   "M2F": 5,
+   "K8V": 2,
+   "J4S": 5,
+   "B9C": 2,
+   "N8P": 4,
+   "G6J": 5,
+   "H6D": 5,
+   "T9R": 4,
+   "C8P": 4,
+   "F8G": 5,
+   "T7N": 5,
+   "W6F": 3,
+   "T8M": 4,
+   "P2X": 4,
+   "C7V": 3,
+   "P8P": 5,
+   "J4D": 2
+  }
+ }
+}

@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Listening Practice Test</title>
+<style>
+  :root {
+    --bg: #eef1f5; --card: #ffffff; --ink: #22344a; --muted: #6b7787; --line: #d5dbe3;
+    --accent: #2563eb; --accent-soft: #e8efff; --good: #15803d; --bad: #b42318; --header: #22344a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.5 -apple-system, "Segoe UI", Arial, sans-serif; }
+  header { background: var(--header); color: #fff; display: flex; justify-content: space-between; align-items: center;
+           padding: 14px 24px; font-weight: 600; gap: 12px; flex-wrap: wrap; }
+  header .right { font-weight: 400; display: flex; gap: 18px; }
+  main { max-width: 760px; margin: 32px auto; padding: 0 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 32px; }
+  h1 { font-size: 26px; margin: 0 0 12px; }
+  h2 { font-size: 20px; margin: 0 0 16px; }
+  p, li { color: var(--ink); }
+  .muted { color: var(--muted); font-size: 15px; }
+  button { font: inherit; border-radius: 10px; border: 0; padding: 12px 22px; cursor: pointer; background: var(--accent); color: #fff; }
+  button:disabled { background: #a3adba; cursor: default; }
+  button.secondary { background: var(--accent-soft); color: var(--accent); }
+  .row { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; gap: 12px; flex-wrap: wrap; }
+  .speaker { display: flex; align-items: center; gap: 18px; margin: 20px 0; }
+  .avatar { width: 84px; height: 84px; border-radius: 50%; background: #c9d3df; position: relative; overflow: hidden; flex: none; }
+  .avatar::before { content: ""; position: absolute; width: 34px; height: 34px; border-radius: 50%; background: #8a9ab0; left: 25px; top: 16px; }
+  .avatar::after { content: ""; position: absolute; width: 70px; height: 60px; border-radius: 50%; background: #8a9ab0; left: 7px; top: 56px; }
+  .avatar.on { box-shadow: 0 0 0 5px var(--accent); }
+  .bars { display: flex; gap: 5px; align-items: center; height: 30px; }
+  .bars span { width: 7px; background: var(--accent); border-radius: 4px; height: 10px; }
+  .bars.on span { animation: pulse 0.9s ease-in-out infinite; }
+  .bars.on span:nth-child(2) { animation-delay: 0.15s; } .bars.on span:nth-child(3) { animation-delay: 0.3s; }
+  .bars.on span:nth-child(4) { animation-delay: 0.45s; } .bars.on span:nth-child(5) { animation-delay: 0.6s; }
+  @keyframes pulse { 0%, 100% { height: 8px; } 50% { height: 28px; } }
+  .progress { height: 8px; background: #e3e8ef; border-radius: 6px; overflow: hidden; margin-top: 8px; }
+  .progress div { height: 100%; width: 0; background: var(--accent); transition: width 0.25s linear; }
+  .options label { display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--line); border-radius: 10px;
+                   padding: 12px 14px; margin: 10px 0; cursor: pointer; }
+  .options label:hover { background: #f6f8fb; }
+  .options input { margin-top: 5px; }
+  .options .letter { font-weight: 700; min-width: 18px; }
+  .stem { font-weight: 600; font-size: 18px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 7px 6px; text-align: left; vertical-align: top; }
+  .ok { color: var(--good); font-weight: 700; } .no { color: var(--bad); font-weight: 700; }
+  .big { font-size: 44px; font-weight: 800; margin: 4px 0; }
+  details { margin-top: 10px; } summary { cursor: pointer; color: var(--accent); }
+  pre { white-space: pre-wrap; background: #f6f8fb; border: 1px solid var(--line); border-radius: 8px; padding: 12px; font-size: 14px; }
+  .note { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 12px 14px; font-size: 15px; }
+  footer { text-align: center; color: #a3adba; font-size: 13px; margin: 28px 0; }
+</style>
+</head>
+<body>
+<header>
+  <div id="hLeft">Listening</div>
+  <div class="right"><span id="hQ"></span><span id="hTime"></span></div>
+</header>
+<main><div class="card" id="screen"></div></main>
+<footer>Practice simulation. Not an official ETS product.</footer>
+
+<script id="test-data" type="application/octet-stream">eyJpZCI6ICIyMDI2LTEwLTIzLWxpc3RlbmluZy0yIiwgInRpdGxlIjogIkxpc3RlbmluZyBwcmFjdGljZSB0ZXN0IDIgKGhhcmRlcikiLCAibmFycmF0b3IiOiAiYW1fbWljaGFlbCIsICJzcGVlZCI6IDEuMDUsICJzdGFnZXMiOiBbeyJuYW1lIjogIlN0YWdlIDEiLCAiYmxvY2tzIjogW3sidHlwZSI6ICJjaG9vc2UiLCAiaWQiOiAiY3IwMSIsICJ2b2ljZSI6ICJibV9nZW9yZ2UiLCAicHJvbXB0IjogIllvdSBoYXZlbid0IHNlZW4gbXkgY2FsY3VsYXRvciBhbnl3aGVyZSwgaGF2ZSB5b3U/IiwgIm9wdGlvbnMiOiBbIlllcywgSSd2ZSBuZXZlciBzZWVuIG9uZSBsaWtlIHRoYXQuIiwgIkknZCBjaGVjayB1bmRlciB0aGUgbGFiIG5vdGVzIG9uIHlvdXIgZGVzay4iLCAiSXQgY2FsY3VsYXRlcyB0aGUgYXZlcmFnZXMgYXV0b21hdGljYWxseS4iLCAiSSBoYXZlbid0IGJlZW4gYW55d2hlcmUgc2luY2UgTW9uZGF5LiJdLCAia2V5IjogIkIiLCAiYXVkaW8iOiAiYXVkaW8vY3IwMS5tNGEifSwgeyJ0eXBlIjogImNob29zZSIsICJpZCI6ICJjcjAyIiwgInZvaWNlIjogImFmX3NhcmFoIiwgInByb21wdCI6ICJJIHdhcyBob3BpbmcgeW91IGNvdWxkIGNvdmVyIG15IHNoaWZ0IG9uIFNhdHVyZGF5LiIsICJvcHRpb25zIjogWyJUaGUgc2hpZnQgc3RhcnRzIGF0IGVpZ2h0IG9uIHdlZWtkYXlzLiIsICJTdXJlLCBJJ2xsIGNvdmVyIHRoZSBjb3N0IG9mIHRoZSB0aWNrZXRzLiIsICJJIHdhcyBob3BpbmcgZm9yIHRoYXQgdG9vLiIsICJJJ2QgbG92ZSB0bywgYnV0IEknbSB2aXNpdGluZyBteSBwYXJlbnRzIHRoYXQgd2Vla2VuZC4iXSwgImtleSI6ICJEIiwgImF1ZGlvIjogImF1ZGlvL2NyMDIubTRhIn0sIHsidHlwZSI6ICJjaG9vc2UiLCAiaWQiOiAiY3IwMyIsICJ2b2ljZSI6ICJhbV9mZW5yaXIiLCAicHJvbXB0IjogIkRvbid0IHRlbGwgbWUgdGhlIHByaW50ZXIncyBqYW1tZWQgYWdhaW4uIiwgIm9wdGlvbnMiOiBbIkknbSBhZnJhaWQgc28uIFNvbWVvbmUncyBhbHJlYWR5IGNhbGxlZCB0aGUgaGVscCBkZXNrLiIsICJJIHdvbid0IHRlbGwgYW55b25lLCBJIHByb21pc2UuIiwgIllvdSBjYW4gcHJpbnQgaXQgaW4gY29sb3IgaWYgeW91IGxpa2UuIiwgIkl0IHdhcyBqYW1tZWQgd2l0aCBwZW9wbGUgdGhpcyBtb3JuaW5nLiJdLCAia2V5IjogIkEiLCAiYXVkaW8iOiAiYXVkaW8vY3IwMy5tNGEifSwgeyJ0eXBlIjogImNob29zZSIsICJpZCI6ICJjcjA0IiwgInZvaWNlIjogImJmX2VtbWEiLCAicHJvbXB0IjogIkknZCBoYXZlIHRob3VnaHQgeW91J2QgYmUgc2ljayBvZiBjaGVtaXN0cnkgYnkgbm93LiIsICJvcHRpb25zIjogWyJJIHdhcyBzaWNrIGxhc3Qgd2VlaywgYnV0IEknbSBiZXR0ZXIgbm93LiIsICJUaGUgY2hlbWlzdHJ5IGJ1aWxkaW5nIGlzIGNsb3NlZCBvbiBTdW5kYXlzLiIsICJBY3R1YWxseSwgdGhlIG1vcmUgSSBsZWFybiwgdGhlIG1vcmUgSSBsaWtlIGl0LiIsICJZb3UnZCBoYXZlIHRob3VnaHQgc28sIGJ1dCBpdCBpc24ndCBteSBjbGFzcy4iXSwgImtleSI6ICJDIiwgImF1ZGlvIjogImF1ZGlvL2NyMDQubTRhIn0sIHsidHlwZSI6ICJjb252ZXJzYXRpb24iLCAiaWQiOiAiY29udjEiLCAiaW50cm8iOiAiTGlzdGVuIHRvIGEgY29udmVyc2F0aW9uLiIsICJ0dXJucyI6IFtbIldvbWFuIiwgImFmX2hlYXJ0IiwgIkhhdmUgeW91IGhlYXJkIGZyb20gRGFuaWVsPyBUaGUgc2xpZGVzIGFyZSBkdWUgdG9tb3Jyb3csIGFuZCBoaXMgc2VjdGlvbiBpcyBzdGlsbCBibGFuay4iXSwgWyJNYW4iLCAiYm1fZ2VvcmdlIiwgIkhlIHRleHRlZCBtZSBsYXN0IG5pZ2h0LiBBcHBhcmVudGx5IGhlJ3MgYmVlbiBzd2FtcGVkIGF0IHdvcmssIGJ1dCBoZSBzd29yZSBoZSdkIGhhdmUgaXQgZG9uZSBieSB0aGlzIG1vcm5pbmcuIl0sIFsiV29tYW4iLCAiYWZfaGVhcnQiLCAiSGUgc2FpZCB0aGUgc2FtZSB0aGluZyBsYXN0IHdlZWsuIEknbSBzdGFydGluZyB0byB0aGluayB3ZSBzaG91bGQganVzdCBzcGxpdCBoaXMgcGFydCBiZXR3ZWVuIHVzLiJdLCBbIk1hbiIsICJibV9nZW9yZ2UiLCAiSSdkIHJhdGhlciBub3QgZ28gYmVoaW5kIGhpcyBiYWNrLiBXaGF0IGlmIHdlIGdpdmUgaGltIHVudGlsIG5vb24sIGFuZCBpZiB0aGVyZSdzIG5vdGhpbmcgYnkgdGhlbiwgd2UgbGV0IHRoZSBwcm9mZXNzb3Iga25vdz8iXSwgWyJXb21hbiIsICJhZl9oZWFydCIsICJGaW5lLiBCdXQgSSdtIGRyYWZ0aW5nIGEgcm91Z2ggdmVyc2lvbiBvZiBoaXMgc2VjdGlvbiBhbnl3YXksIGp1c3QgaW4gY2FzZS4iXSwgWyJNYW4iLCAiYm1fZ2VvcmdlIiwgIkZhaXIgZW5vdWdoLiBCZXR0ZXIgc2FmZSB0aGFuIHNvcnJ5LiJdXSwgInF1ZXN0aW9ucyI6IFt7InN0ZW0iOiAiV2hhdCBkb2VzIHRoZSB3b21hbiBpbXBseSBhYm91dCBEYW5pZWw/IiwgIm9wdGlvbnMiOiBbIkhlIGRvZXNuJ3QgdW5kZXJzdGFuZCB0aGUgdG9waWMuIiwgIkhlIGhhcyBhbHJlYWR5IGZpbmlzaGVkIGhpcyBwYXJ0LiIsICJIZSB3b3JrcyBhdCB0aGUgc2FtZSBwbGFjZSBhcyB0aGUgbWFuLiIsICJIZSBoYXMgZmFpbGVkIHRvIGtlZXAgYSBwcm9taXNlIGxpa2UgdGhpcyBiZWZvcmUuIl0sICJrZXkiOiAiRCJ9LCB7InN0ZW0iOiAiV2hhdCBkb2VzIHRoZSB3b21hbiBkZWNpZGUgdG8gZG8/IiwgIm9wdGlvbnMiOiBbIlRlbGwgdGhlIHByb2Zlc3NvciByaWdodCBhd2F5IiwgIlByZXBhcmUgYSBiYWNrdXAgdmVyc2lvbiBvZiBEYW5pZWwncyBwYXJ0IiwgIldhaXQgdW50aWwgbm9vbiBiZWZvcmUgZG9pbmcgYW55dGhpbmciLCAiQXNrIERhbmllbCB0byBzd2l0Y2ggc2VjdGlvbnMgd2l0aCBoZXIiXSwgImtleSI6ICJCIn1dLCAiYXVkaW8iOiAiYXVkaW8vY29udjEubTRhIn0sIHsidHlwZSI6ICJhbm5vdW5jZW1lbnQiLCAiaWQiOiAiYW5uMSIsICJpbnRybyI6ICJMaXN0ZW4gdG8gYW4gYW5ub3VuY2VtZW50IGluIGEgY2xhc3Nyb29tLiIsICJ2b2ljZSI6ICJhbV9mZW5yaXIiLCAidGV4dCI6ICJRdWljayBjaGFuZ2UgdG8gdGhlIHNjaGVkdWxlLCBldmVyeW9uZS4gQmVjYXVzZSBvZiB0aGUgc3Rvcm0gd2FybmluZywgdGhlIGJ1cyB0byB0aGUgZmllbGQgc3RhdGlvbiB3aWxsIGxlYXZlIGF0IHNldmVuIHRoaXJ0eSBpbnN0ZWFkIG9mIG5pbmUsIHNvIHBsYW4gb24gYW4gZWFybHkgc3RhcnQuIElmIHRoZSByb2FkcyBjbG9zZSBvdmVybmlnaHQsIHdlJ2xsIHN3aXRjaCB0byB0aGUgYmFja3VwIHBsYW4gYW5kIGFuYWx5emUgbGFzdCB5ZWFyJ3Mgc2FtcGxlcyBpbiB0aGUgbWFpbiBsYWIgaW5zdGVhZC4gRWl0aGVyIHdheSwgYnJpbmcgeW91ciBub3RlYm9va3MuIFlvdSdsbCBnZXQgYSB0ZXh0IGJ5IHNpeCBpbiB0aGUgbW9ybmluZyB0ZWxsaW5nIHlvdSB3aGljaCBwbGFuIHdlJ3JlIGdvaW5nIHdpdGgsIHNvIGtlZXAgeW91ciBwaG9uZXMgb24uIiwgInF1ZXN0aW9ucyI6IFt7InN0ZW0iOiAiV2h5IGhhcyB0aGUgZGVwYXJ0dXJlIHRpbWUgY2hhbmdlZD8iLCAib3B0aW9ucyI6IFsiVGhlIGZpZWxkIHN0YXRpb24gb3BlbnMgZWFybGllciB0aGFuIGV4cGVjdGVkLiIsICJUaGUgYnVzIGlzIG5lZWRlZCBmb3IgYW5vdGhlciB0cmlwLiIsICJCYWQgd2VhdGhlciBpcyBleHBlY3RlZC4iLCAiVGhlIHNhbXBsZXMgbXVzdCBiZSBjb2xsZWN0ZWQgYmVmb3JlIG5pbmUuIl0sICJrZXkiOiAiQyJ9LCB7InN0ZW0iOiAiV2hhdCB3aWxsIHN0dWRlbnRzIGZpbmQgb3V0IGJ5IHNpeCBpbiB0aGUgbW9ybmluZz8iLCAib3B0aW9ucyI6IFsiV2hldGhlciB0aGV5IHdpbGwgdHJhdmVsIHRvIHRoZSBmaWVsZCBzdGF0aW9uIiwgIldoaWNoIHNhbXBsZXMgdGhleSB3aWxsIGFuYWx5emUiLCAiV2hlcmUgdG8gYnV5IHRoZWlyIG5vdGVib29rcyIsICJXaGVuIHRoZSByb2FkcyB3aWxsIHJlb3BlbiJdLCAia2V5IjogIkEifV0sICJhdWRpbyI6ICJhdWRpby9hbm4xLm00YSJ9LCB7InR5cGUiOiAidGFsayIsICJpZCI6ICJ0YWxrMSIsICJpbnRybyI6ICJMaXN0ZW4gdG8gcGFydCBvZiBhIHRhbGsgaW4gYW4gYXJ0IGhpc3RvcnkgY2xhc3MuIiwgInZvaWNlIjogImFmX2JlbGxhIiwgInRleHQiOiAiV2hlbiBwZW9wbGUgdGFsayBhYm91dCBJbXByZXNzaW9uaXNtLCB0aGV5IHVzdWFsbHkgZm9jdXMgb24gdGhlIGFydGlzdHMsIHBhaW50ZXJzIGxpa2UgUmVub2lyIGFuZCBoaXMgZnJpZW5kcy4gQnV0IEkgd2FudCB0byBzdGFydCB3aXRoIHNvbWV0aGluZyBtdWNoIGxlc3MgZ2xhbW9yb3VzOiBhIHR1YmUgb2YgcGFpbnQuIFVudGlsIHRoZSBtaWRkbGUgb2YgdGhlIG5pbmV0ZWVudGggY2VudHVyeSwgcGFpbnRlcnMgbWl4ZWQgdGhlaXIgb3duIGNvbG9ycyBmcm9tIHBvd2RlcmVkIHBpZ21lbnQgYW5kIG9pbCwgYW5kIHRoZSBwYWludCBkaWRuJ3Qga2VlcC4gSXQgZHJpZWQgb3V0IHdpdGhpbiBob3VycyB1bmxlc3MgaXQgd2FzIHN0b3JlZCBpbiBhIHBpZydzIGJsYWRkZXIsIHdoaWNoLCBhcyB5b3UgY2FuIGltYWdpbmUsIHRlbmRlZCB0byBidXJzdC4gU28gcGFpbnRpbmcgb3V0ZG9vcnMgd2FzIHBvc3NpYmxlLCBidXQgaXQgd2FzIGEgbWVzc3ksIGltcHJhY3RpY2FsIGJ1c2luZXNzLCBhbmQgbW9zdCBzZXJpb3VzIHdvcmsgaGFwcGVuZWQgaW4gdGhlIHN0dWRpby4gVGhlbiwgaW4gZWlnaHRlZW4gZm9ydHktb25lLCBhbiBBbWVyaWNhbiBwb3J0cmFpdCBwYWludGVyIGxpdmluZyBpbiBMb25kb24gcGF0ZW50ZWQgYSBjb2xsYXBzaWJsZSBtZXRhbCB0dWJlLiBTdWRkZW5seSwgcGFpbnQgY291bGQgYmUgc2VhbGVkLCBjYXJyaWVkIGFyb3VuZCwgYW5kIG9wZW5lZCBkYXlzIGxhdGVyLiBNYW51ZmFjdHVyZXJzIGFsc28gYmVnYW4gb2ZmZXJpbmcgbmV3LCByZWFkeS1tYWRlIGNvbG9ycyB0aGF0IHdlcmUgYnJpZ2h0ZXIgYW5kIG1vcmUgc3RhYmxlIHRoYW4gdGhlIG9sZCBvbmVzLiBOb3csIEknbSBub3Qgc2F5aW5nIHRoZSB0dWJlIGNyZWF0ZWQgSW1wcmVzc2lvbmlzbS4gVGhlIHBhaW50ZXJzIGhhZCB0aGVpciBvd24gcmVhc29ucyBmb3Igd2FudGluZyB0byBjYXB0dXJlIGNoYW5naW5nIGxpZ2h0IGRpcmVjdGx5IGZyb20gbmF0dXJlLiBCdXQgd2l0aG91dCBwb3J0YWJsZSBwYWludCwgdGhhdCBhbWJpdGlvbiB3b3VsZCBoYXZlIGJlZW4gdmVyeSBoYXJkIHRvIGFjdCBvbi4gUmVub2lyIHN1cHBvc2VkbHkgc2FpZCB0aGF0IHdpdGhvdXQgdHViZXMgb2YgcGFpbnQsIHRoZXJlIHdvdWxkIGhhdmUgYmVlbiBubyBJbXByZXNzaW9uaXNtLiBUaGF0J3MgcHJvYmFibHkgYW4gZXhhZ2dlcmF0aW9uLCBidXQgaXQgbWFrZXMgYSB1c2VmdWwgcG9pbnQ6IGFydGlzdGljIG1vdmVtZW50cyBkZXBlbmQgb24gdGVjaG5vbG9neSBhcyB3ZWxsIGFzIG9uIGlkZWFzLiIsICJxdWVzdGlvbnMiOiBbeyJzdGVtIjogIldoYXQgaXMgdGhlIHRhbGsgbWFpbmx5IGFib3V0PyIsICJvcHRpb25zIjogWyJUaGUgZWFybHkgY2FyZWVycyBvZiBmYW1vdXMgSW1wcmVzc2lvbmlzdCBwYWludGVycyIsICJXaHkgcGFpbnRlcnMgcHJlZmVycmVkIHRvIHdvcmsgaW4gc3R1ZGlvcyIsICJIb3cgcGFpbnQgbWFudWZhY3R1cmVycyBkZXZlbG9wZWQgbmV3IGNvbG9ycyIsICJIb3cgYSBwcmFjdGljYWwgaW52ZW50aW9uIGhlbHBlZCBtYWtlIGEgc3R5bGUgb2YgcGFpbnRpbmcgcG9zc2libGUiXSwgImtleSI6ICJEIn0sIHsic3RlbSI6ICJXaHkgZG9lcyB0aGUgc3BlYWtlciBtZW50aW9uIGEgcGlnJ3MgYmxhZGRlcj8iLCAib3B0aW9ucyI6IFsiVG8gZGVzY3JpYmUgYW4gdW51c3VhbCBzdWJqZWN0IG9mIGVhcmx5IHBhaW50aW5ncyIsICJUbyBzaG93IGhvdyBoYXJkIGl0IHdhcyB0byBzdG9yZSBhbmQgY2FycnkgcGFpbnQiLCAiVG8gZXhwbGFpbiB3aGVyZSBwaWdtZW50cyBjYW1lIGZyb20iLCAiVG8gZ2l2ZSBhbiBleGFtcGxlIG9mIGEgbWF0ZXJpYWwgdXNlZCBpbiBlYXJseSB0dWJlcyJdLCAia2V5IjogIkIifSwgeyJzdGVtIjogIldoYXQgaXMgdGhlIHNwZWFrZXIncyBhdHRpdHVkZSB0b3dhcmQgUmVub2lyJ3Mgc3RhdGVtZW50PyIsICJvcHRpb25zIjogWyJTaGUgdGhpbmtzIGl0IG92ZXJzdGF0ZXMgdGhlIGNhc2UgYnV0IG1ha2VzIGEgdmFsaWQgcG9pbnQuIiwgIlNoZSB0aGlua3MgaXQgaXMgY29tcGxldGVseSBhY2N1cmF0ZS4iLCAiU2hlIGRvdWJ0cyB0aGF0IFJlbm9pciBldmVyIHNhaWQgaXQuIiwgIlNoZSBiZWxpZXZlcyBpdCBpZ25vcmVzIHRoZSByb2xlIG9mIHRoZSB0dWJlLiJdLCAia2V5IjogIkEifSwgeyJzdGVtIjogIldoYXQgY2FuIGJlIGluZmVycmVkIGFib3V0IHBhaW50aW5nIGJlZm9yZSB0aGUgZWlnaHRlZW4gZm9ydGllcz8iLCAib3B0aW9ucyI6IFsiUGFpbnRlcnMgd2VyZSBub3QgaW50ZXJlc3RlZCBpbiBuYXR1cmFsIGxpZ2h0LiIsICJDb2xvcnMgd2VyZSBicmlnaHRlciB0aGFuIGluIGxhdGVyIHBlcmlvZHMuIiwgIk1vc3QgZmluaXNoZWQgcGFpbnRpbmdzIHdlcmUgcHJvZHVjZWQgaW5kb29ycy4iLCAiUGFpbnRlcnMgYm91Z2h0IHRoZWlyIHBhaW50IGZyb20gbWFudWZhY3R1cmVycy4iXSwgImtleSI6ICJDIn1dLCAiYXVkaW8iOiAiYXVkaW8vdGFsazEubTRhIn1dfSwgeyJuYW1lIjogIlN0YWdlIDIiLCAiYmxvY2tzIjogW3sidHlwZSI6ICJjaG9vc2UiLCAiaWQiOiAiY3IwNSIsICJ2b2ljZSI6ICJibV9mYWJsZSIsICJwcm9tcHQiOiAiWW91IG1pZ2h0IHdhbnQgdG8gZG91YmxlLWNoZWNrIHRob3NlIGZpZ3VyZXMgYmVmb3JlIFByb2Zlc3NvciBMZXdpcyBzZWVzIHRoZW0uIiwgIm9wdGlvbnMiOiBbIlByb2Zlc3NvciBMaW4gd2lsbCBzZWUgeW91IGF0IHRocmVlLiIsICJXaHksIGRpZCBJIGdldCBzb21ldGhpbmcgd3Jvbmc/IiwgIkkndmUgZG91YmxlLWJvb2tlZCB0aGUgcm9vbSwgSSdtIGFmcmFpZC4iLCAiWWVzLCB0aGUgZmlndXJlcyBpbiB0aGUgYm9vayBhcmUgdmVyeSBjbGVhci4iXSwgImtleSI6ICJCIiwgImF1ZGlvIjogImF1ZGlvL2NyMDUubTRhIn0sIHsidHlwZSI6ICJjaG9vc2UiLCAiaWQiOiAiY3IwNiIsICJ2b2ljZSI6ICJhZl9oZWFydCIsICJwcm9tcHQiOiAiSSB3b3VsZG4ndCBob2xkIG15IGJyZWF0aCB3YWl0aW5nIGZvciB0aGUgbGlicmFyeSB0byBleHRlbmQgaXRzIGhvdXJzLiIsICJvcHRpb25zIjogWyJEb24ndCB3b3JyeSwgSSBjYW4gaG9sZCBpdCBmb3IgYSBsb25nIHRpbWUuIiwgIlRoZSBsaWJyYXJ5J3MgaG91cnMgYXJlIHBvc3RlZCBieSB0aGUgZW50cmFuY2UuIiwgIkkndmUgYmVlbiB3YWl0aW5nIGhlcmUgZm9yIHR3ZW50eSBtaW51dGVzLiIsICJZb3UgdGhpbmsgdGhleSdsbCBzYXkgbm8sIHRoZW4/Il0sICJrZXkiOiAiRCIsICJhdWRpbyI6ICJhdWRpby9jcjA2Lm00YSJ9LCB7InR5cGUiOiAiY2hvb3NlIiwgImlkIjogImNyMDciLCAidm9pY2UiOiAiYW1fcHVjayIsICJwcm9tcHQiOiAiQ29ycmVjdCBtZSBpZiBJJ20gd3JvbmcsIGJ1dCB3YXNuJ3QgdGhlIHNlbWluYXIgc3VwcG9zZWQgdG8gc3RhcnQgYXQgdHdvPyIsICJvcHRpb25zIjogWyJJJ20gYWZyYWlkIEkgY2FuJ3QgY29ycmVjdCB5b3VyIGVzc2F5IHRvZGF5LiIsICJUd28gc2VtaW5hcnMgd291bGQgYmUgdG9vIG1hbnkgZm9yIG1lLiIsICJZb3UncmUgcmlnaHQsIGJ1dCBpdCdzIGJlZW4gcHVzaGVkIGJhY2sgaGFsZiBhbiBob3VyLiIsICJJdCB3YXMgd3Jvbmcgb2YgdGhlbSB0byBzdGFydCB3aXRob3V0IHVzLiJdLCAia2V5IjogIkMiLCAiYXVkaW8iOiAiYXVkaW8vY3IwNy5tNGEifSwgeyJ0eXBlIjogImNob29zZSIsICJpZCI6ICJjcjA4IiwgInZvaWNlIjogImJmX2lzYWJlbGxhIiwgInByb21wdCI6ICJJc24ndCBpdCBhIGJpdCBsYXRlIGluIHRoZSBzZW1lc3RlciB0byBiZSBzd2l0Y2hpbmcgbWFqb3JzPyIsICJvcHRpb25zIjogWyJNYXliZSwgYnV0IEknZCByYXRoZXIgc3dpdGNoIG5vdyB0aGFuIHJlZ3JldCBpdCBsYXRlci4iLCAiSXQncyBhIGJpdCBsYXRlLCBzbyBJJ2xsIHN3aXRjaCBvZmYgdGhlIGxpZ2h0cy4iLCAiVGhlIHNlbWVzdGVyIGVuZHMgaW4gdGhlIG1pZGRsZSBvZiBNYXkuIiwgIkkndmUgYWxyZWFkeSBtYWpvcmVkIGluIHR3byBzdWJqZWN0cy4iXSwgImtleSI6ICJBIiwgImF1ZGlvIjogImF1ZGlvL2NyMDgubTRhIn0sIHsidHlwZSI6ICJjb252ZXJzYXRpb24iLCAiaWQiOiAiY29udjIiLCAiaW50cm8iOiAiTGlzdGVuIHRvIGEgY29udmVyc2F0aW9uLiIsICJ0dXJucyI6IFtbIk1hbiIsICJhbV9mZW5yaXIiLCAiUHJvZmVzc29yIEdyYW50LCBjb3VsZCBJIGFzayB5b3UgYWJvdXQgbXkgbGFiIHJlcG9ydD8gSSBnb3QgYSBDLCBhbmQgaG9uZXN0bHksIEknbSBub3Qgc3VyZSB3aGVyZSBJIHdlbnQgd3JvbmcuIl0sIFsiV29tYW4iLCAiYmZfZW1tYSIsICJZb3VyIGRhdGEgd2VyZSBmaW5lLiBUaGUgcHJvYmxlbSB3YXMgdGhlIGRpc2N1c3Npb24gc2VjdGlvbi4gWW91IGRlc2NyaWJlZCB3aGF0IGhhcHBlbmVkLCBidXQgeW91IG5ldmVyIHJlYWxseSBleHBsYWluZWQgd2h5LiJdLCBbIk1hbiIsICJhbV9mZW5yaXIiLCAiSSB0aG91Z2h0IHRoZSByZXN1bHRzIHNwb2tlIGZvciB0aGVtc2VsdmVzLiJdLCBbIldvbWFuIiwgImJmX2VtbWEiLCAiUmVzdWx0cyBuZXZlciBzcGVhayBmb3IgdGhlbXNlbHZlcy4gVGhhdCdzIHRoZSB3aG9sZSBwb2ludCBvZiBhIGRpc2N1c3Npb24uIExvb2ssIEkgZG9uJ3QgdXN1YWxseSBhY2NlcHQgcmV3cml0ZXMsIGJ1dCB5b3UncmUgY2xlYXJseSBjYXBhYmxlIG9mIGJldHRlciB3b3JrLiBJZiB5b3UgcmV2aXNlIHRoZSBkaXNjdXNzaW9uIGFuZCBnZXQgaXQgdG8gbWUgYnkgRnJpZGF5LCBJJ2xsIHRha2UgYW5vdGhlciBsb29rLiJdLCBbIk1hbiIsICJhbV9mZW5yaXIiLCAiVGhhdCB3b3VsZCBiZSBncmVhdC4gU2hvdWxkIEkgcmVkbyB0aGUgZGF0YSBhbmFseXNpcyB0b28/Il0sIFsiV29tYW4iLCAiYmZfZW1tYSIsICJJJ2QgbGVhdmUgdGhhdCBhbG9uZS4gSWYgaXQgaXNuJ3QgYnJva2VuLCBkb24ndCBmaXggaXQuIl1dLCAicXVlc3Rpb25zIjogW3sic3RlbSI6ICJXaGF0IGRvZXMgdGhlIHByb2Zlc3NvciBtZWFuIHdoZW4gc2hlIHNheXMsIFwiUmVzdWx0cyBuZXZlciBzcGVhayBmb3IgdGhlbXNlbHZlc1wiPyIsICJvcHRpb25zIjogWyJUaGUgc3R1ZGVudCdzIHJlc3VsdHMgd2VyZSBub3QgYWNjdXJhdGUuIiwgIlRoZSBzdHVkZW50IHNob3VsZCBoYXZlIGluY2x1ZGVkIG1vcmUgcmVzdWx0cy4iLCAiRGF0YSBhbHdheXMgbmVlZCB0byBiZSBpbnRlcnByZXRlZCBieSB0aGUgd3JpdGVyLiIsICJNb3N0IHN0dWRlbnRzIG1pc3VuZGVyc3RhbmQgdGhlaXIgb3duIGRhdGEuIl0sICJrZXkiOiAiQyJ9LCB7InN0ZW0iOiAiV2hhdCBkb2VzIHRoZSBwcm9mZXNzb3IgaW1wbHkgYWJvdXQgdGhlIHN0dWRlbnQncyBkYXRhIGFuYWx5c2lzPyIsICJvcHRpb25zIjogWyJJdCBzaG91bGQgYmUgc2hvcnRlbmVkLiIsICJJdCBuZWVkcyB0byBiZSBjaGVja2VkIGJ5IGFub3RoZXIgc3R1ZGVudC4iLCAiSXQgd2FzIHRoZSBtYWluIHJlYXNvbiBmb3IgdGhlIGxvdyBncmFkZS4iLCAiSXQgZG9lcyBub3QgbmVlZCBhbnkgY2hhbmdlcy4iXSwgImtleSI6ICJEIn1dLCAiYXVkaW8iOiAiYXVkaW8vY29udjIubTRhIn0sIHsidHlwZSI6ICJjb252ZXJzYXRpb24iLCAiaWQiOiAiY29udjMiLCAiaW50cm8iOiAiTGlzdGVuIHRvIGEgY29udmVyc2F0aW9uLiIsICJzcGVlZCI6IDEuMSwgInR1cm5zIjogW1siV29tYW4iLCAiYWZfYmVsbGEiLCAiU28sIGRpZCB5b3UgbWFuYWdlIHRvIGdldCB0aWNrZXRzIGZvciB0aGUgZmVzdGl2YWw/Il0sIFsiTWFuIiwgImFtX3B1Y2siLCAiRG9uJ3QgZ2V0IG1lIHN0YXJ0ZWQuIFRoZSB3ZWJzaXRlIGNyYXNoZWQgdGhlIHNlY29uZCB0aGV5IHdlbnQgb24gc2FsZSwgYW5kIGJ5IHRoZSB0aW1lIGl0IGNhbWUgYmFjaywgZXZlcnl0aGluZyB3YXMgZ29uZS4iXSwgWyJXb21hbiIsICJhZl9iZWxsYSIsICJVZ2gsIHRoYXQncyByb3VnaC4gSGF2ZSB5b3UgdHJpZWQgdGhlIHJlc2FsZSBwYWdlPyBQZW9wbGUgdXN1YWxseSBnZXQgcmlkIG9mIHRoZWlyIHRpY2tldHMgdGhlIHdlZWsgYmVmb3JlLiJdLCBbIk1hbiIsICJhbV9wdWNrIiwgIkkgbG9va2VkLCBidXQgdGhlIHByaWNlcyBhcmUgdGhyb3VnaCB0aGUgcm9vZi4gVHdvIGh1bmRyZWQgZG9sbGFycyBmb3IgYSBzaW5nbGUgZGF5PyBObyB3YXkuIl0sIFsiV29tYW4iLCAiYWZfYmVsbGEiLCAiV2VsbCwgbXkgY291c2luJ3Mgdm9sdW50ZWVyaW5nIHRoZXJlLiBWb2x1bnRlZXJzIGdldCBpbiBmcmVlIGlmIHRoZXkgZG8gYSBzaXgtaG91ciBzaGlmdC4gSSBjb3VsZCBhc2sgd2hldGhlciB0aGV5IHN0aWxsIG5lZWQgcGVvcGxlLiJdLCBbIk1hbiIsICJhbV9wdWNrIiwgIlNpeCBob3VycyBvZiBwaWNraW5nIHVwIHRyYXNoIHNvIEkgY2FuIHNlZSBvbmUgYmFuZD8gQWN0dWFsbHksIHlvdSBrbm93IHdoYXQsIGlmIGl0J3MgdGhlIG9ubHkgd2F5IGluLCBjb3VudCBtZSBpbi4iXV0sICJxdWVzdGlvbnMiOiBbeyJzdGVtIjogIldoeSBkaWRuJ3QgdGhlIG1hbiBnZXQgdGlja2V0cyB3aGVuIHRoZXkgd2VudCBvbiBzYWxlPyIsICJvcHRpb25zIjogWyJBIHRlY2huaWNhbCBwcm9ibGVtIHByZXZlbnRlZCBoaW0gZnJvbSBidXlpbmcgdGhlbS4iLCAiSGUgZm9yZ290IHdoZW4gdGhlIHNhbGUgc3RhcnRlZC4iLCAiVGhlIHRpY2tldHMgd2VyZSB0b28gZXhwZW5zaXZlLiIsICJIZSB3YXMgd2FpdGluZyBmb3IgdGhlIHJlc2FsZSBwYWdlIHRvIG9wZW4uIl0sICJrZXkiOiAiQSJ9LCB7InN0ZW0iOiAiV2hhdCBpcyB0aGUgbWFuJ3MgYXR0aXR1ZGUgdG93YXJkIHZvbHVudGVlcmluZyBhdCB0aGUgZmVzdGl2YWw/IiwgIm9wdGlvbnMiOiBbIkhlIGlzIGVhZ2VyIHRvIGhlbHAgdGhlIG9yZ2FuaXplcnMuIiwgIkhlIGlzIHJlbHVjdGFudCBhdCBmaXJzdCBidXQgZGVjaWRlcyBpdCBpcyB3b3J0aCBpdC4iLCAiSGUgdGhpbmtzIGEgc2l4LWhvdXIgc2hpZnQgaXMgdG9vIGxvbmcgYW5kIHJlZnVzZXMuIiwgIkhlIHdvdWxkIHByZWZlciB0byBwYXkgdGhlIHJlc2FsZSBwcmljZS4iXSwgImtleSI6ICJCIn1dLCAiYXVkaW8iOiAiYXVkaW8vY29udjMubTRhIn0sIHsidHlwZSI6ICJhbm5vdW5jZW1lbnQiLCAiaWQiOiAiYW5uMiIsICJpbnRybyI6ICJMaXN0ZW4gdG8gYW4gYW5ub3VuY2VtZW50IGluIGEgY2xhc3Nyb29tLiIsICJ2b2ljZSI6ICJibV9nZW9yZ2UiLCAidGV4dCI6ICJCZWZvcmUgd2Ugd3JhcCB1cDogdGhlIGd1ZXN0IHNwZWFrZXIgd2hvIHdhcyBzY2hlZHVsZWQgZm9yIFRodXJzZGF5IGhhcyBoYWQgdG8gY2FuY2VsLCBzbyBpbnN0ZWFkIG9mIGEgbGVjdHVyZSwgd2UnbGwgaG9sZCBhIGRlYmF0ZS4gSSdsbCBkaXZpZGUgeW91IGludG8gdHdvIHRlYW1zIGF0IHRoZSBzdGFydCBvZiBjbGFzcy4gWW91IHdvbid0IGtub3cgd2hpY2ggc2lkZSB5b3UncmUgYXJndWluZyB1bnRpbCB0aGVuLCBzbyByZWFkIGJvdGggb2YgdGhlIGFzc2lnbmVkIGFydGljbGVzLCBub3QganVzdCB0aGUgb25lIHlvdSBhZ3JlZSB3aXRoLiBBbmQgc2luY2UgcGFydGljaXBhdGlvbiBjb3VudHMgdG93YXJkIHlvdXIgZmluYWwgZ3JhZGUsIGFueW9uZSB3aG8gY2FuJ3QgYXR0ZW5kIHNob3VsZCBlbWFpbCBtZSBieSBXZWRuZXNkYXkuIiwgInF1ZXN0aW9ucyI6IFt7InN0ZW0iOiAiV2h5IHNob3VsZCBzdHVkZW50cyByZWFkIGJvdGggYXJ0aWNsZXM/IiwgIm9wdGlvbnMiOiBbIkJvdGggd2lsbCBiZSBvbiB0aGUgZmluYWwgZXhhbS4iLCAiVGhlIGd1ZXN0IHNwZWFrZXIgd3JvdGUgb25lIG9mIHRoZW0uIiwgIlRoZSBhcnRpY2xlcyBwcmVzZW50IHRoZSBzYW1lIGFyZ3VtZW50LiIsICJUaGV5IHdpbGwgbm90IGtub3cgdGhlaXIgcG9zaXRpb24gaW4gYWR2YW5jZS4iXSwgImtleSI6ICJEIn0sIHsic3RlbSI6ICJXaGF0IGlzIGltcGxpZWQgYWJvdXQgc3R1ZGVudHMgd2hvIG1pc3MgVGh1cnNkYXkncyBjbGFzcyB3aXRob3V0IHRlbGxpbmcgdGhlIHByb2Zlc3Nvcj8iLCAib3B0aW9ucyI6IFsiVGhleSB3aWxsIGhhdmUgdG8gZ2l2ZSBhIHByZXNlbnRhdGlvbi4iLCAiVGhleSBjYW4gd2F0Y2ggYSByZWNvcmRpbmcgb2YgdGhlIGRlYmF0ZS4iLCAiVGhleSBtYXkgbG9zZSBwb2ludHMgZm9yIHBhcnRpY2lwYXRpb24uIiwgIlRoZXkgd2lsbCBiZSBhc3NpZ25lZCB0byBhIHRlYW0gYnkgZW1haWwuIl0sICJrZXkiOiAiQyJ9XSwgImF1ZGlvIjogImF1ZGlvL2FubjIubTRhIn0sIHsidHlwZSI6ICJ0YWxrIiwgImlkIjogInRhbGsyIiwgImludHJvIjogIkxpc3RlbiB0byBwYXJ0IG9mIGEgbGVjdHVyZSBpbiBhbiBlbnZpcm9ubWVudGFsIHNjaWVuY2UgY2xhc3MuIiwgInZvaWNlIjogImJtX2dlb3JnZSIsICJ0ZXh0IjogIkhlcmUncyBhIHB1enpsZSBmcm9tIHRoZSBlaWdodGVlbiBzaXh0aWVzLiBBIEJyaXRpc2ggZWNvbm9taXN0IG5vdGljZWQgc29tZXRoaW5nIG9kZC4gU3RlYW0gZW5naW5lcyBoYWQgYmVjb21lIGZhciBtb3JlIGVmZmljaWVudCwgdXNpbmcgbXVjaCBsZXNzIGNvYWwgdG8gZG8gdGhlIHNhbWUgYW1vdW50IG9mIHdvcmsuIFlvdSdkIGV4cGVjdCBCcml0YWluJ3MgY29hbCBjb25zdW1wdGlvbiB0byBmYWxsLiBJbnN0ZWFkLCBpdCBzb2FyZWQuIEhpcyBleHBsYW5hdGlvbiB3YXMgdGhhdCBlZmZpY2llbmN5IG1hZGUgY29hbC1wb3dlcmVkIHdvcmsgY2hlYXBlciwgYW5kIHdoZW4gc29tZXRoaW5nIGdldHMgY2hlYXBlciwgcGVvcGxlIGZpbmQgbmV3IHVzZXMgZm9yIGl0LiBGYWN0b3JpZXMgdGhhdCBjb3VsZG4ndCBhZmZvcmQgc3RlYW0gcG93ZXIgYmVmb3JlIHN1ZGRlbmx5IGNvdWxkLiBTbyB0aGUgc2F2aW5ncyBwZXIgZW5naW5lIHdlcmUgc3dhbXBlZCBieSB0aGUgZ3Jvd3RoIGluIHRoZSBudW1iZXIgb2YgZW5naW5lcy4gVG9kYXkgd2UgY2FsbCB0aGlzIHRoZSByZWJvdW5kIGVmZmVjdCwgYW5kIGl0IGlzbid0IGp1c3QgaGlzdG9yeS4gV2hlbiBjYXJzIGJlY29tZSBtb3JlIGZ1ZWwtZWZmaWNpZW50LCBzb21lIHBlb3BsZSBkcml2ZSBtb3JlLCBiZWNhdXNlIGVhY2gga2lsb21ldGVyIGNvc3RzIGxlc3MuIFdoZW4gbGlnaHRpbmcgZ2V0cyBjaGVhcGVyLCB3ZSBsaWdodCB1cCBidWlsZGluZ3MgYW5kIGdhcmRlbnMgdGhhdCB3ZSB1c2VkIHRvIGxlYXZlIGRhcmsuIE5vdywgSSB3YW50IHRvIGJlIGNhcmVmdWwgaGVyZS4gVGhlIHJlYm91bmQgZWZmZWN0IGRvZXNuJ3QgbWVhbiB0aGF0IGVmZmljaWVuY3kgaXMgcG9pbnRsZXNzLiBJbiBtb3N0IGNhc2VzLCBvbmx5IHBhcnQgb2YgdGhlIHNhdmluZ3MgaXMgZWF0ZW4gdXAgYnkgZXh0cmEgdXNlLiBUb3RhbCBjb25zdW1wdGlvbiBzdGlsbCBnb2VzIGRvd24sIGp1c3Qgbm90IGFzIG11Y2ggYXMgdGhlIGVuZ2luZWVycyBwcmVkaWN0ZWQuIFRoZSBmdWxsIHBhcmFkb3gsIHdoZXJlIGNvbnN1bXB0aW9uIGFjdHVhbGx5IHJpc2VzLCBpcyB0aGUgZXhjZXB0aW9uIHJhdGhlciB0aGFuIHRoZSBydWxlLiBUaGUgcmVhbCBsZXNzb24gaXMgdGhhdCBlZmZpY2llbmN5IGFsb25lIGlzIHJhcmVseSBlbm91Z2guIElmIHdlIHdhbnQgZW5lcmd5IHVzZSB0byBmYWxsLCBlZmZpY2llbmN5IHVzdWFsbHkgaGFzIHRvIGJlIGNvbWJpbmVkIHdpdGggcG9saWNpZXMgdGhhdCBzdG9wIHByaWNlcyBmcm9tIGRyb3BwaW5nLCBzdWNoIGFzIHRheGVzLiIsICJxdWVzdGlvbnMiOiBbeyJzdGVtIjogIldoYXQgaXMgdGhlIG1haW4gdG9waWMgb2YgdGhlIGxlY3R1cmU/IiwgIm9wdGlvbnMiOiBbIkhvdyBncmVhdGVyIGVmZmljaWVuY3kgY2FuIGxlYWQgdG8gbW9yZSB1c2Ugb2YgYSByZXNvdXJjZSIsICJXaHkgc3RlYW0gZW5naW5lcyByZXBsYWNlZCBvbGRlciBtYWNoaW5lcyIsICJUaGUgaGlzdG9yeSBvZiBjb2FsIG1pbmluZyBpbiBCcml0YWluIiwgIldoeSBmdWVsLWVmZmljaWVudCBjYXJzIGFyZSBiZWNvbWluZyBwb3B1bGFyIl0sICJrZXkiOiAiQSJ9LCB7InN0ZW0iOiAiQWNjb3JkaW5nIHRvIHRoZSBwcm9mZXNzb3IsIHdoeSBkaWQgY29hbCBjb25zdW1wdGlvbiByaXNlIGluIEJyaXRhaW4/IiwgIm9wdGlvbnMiOiBbIkNvYWwgYmVjYW1lIG1vcmUgZGlmZmljdWx0IHRvIG1pbmUuIiwgIkVuZ2luZXMgbmVlZGVkIG1vcmUgY29hbCB0byBkbyB0aGUgc2FtZSB3b3JrLiIsICJUaGUgZ292ZXJubWVudCBlbmNvdXJhZ2VkIHRoZSB1c2Ugb2YgY29hbC4iLCAiTWFueSBtb3JlIGJ1c2luZXNzZXMgY291bGQgYWZmb3JkIHN0ZWFtIHBvd2VyLiJdLCAia2V5IjogIkQifSwgeyJzdGVtIjogIldoeSBkb2VzIHRoZSBwcm9mZXNzb3Igc2F5LCBcIkkgd2FudCB0byBiZSBjYXJlZnVsIGhlcmVcIj8iLCAib3B0aW9ucyI6IFsiVG8gd2FybiBzdHVkZW50cyBhYm91dCBhIGRpZmZpY3VsdCBjYWxjdWxhdGlvbiIsICJUbyBpbnRyb2R1Y2UgYSBsaW1pdCBvbiB0aGUgY2xhaW0gaGUgaGFzIGp1c3QgbWFkZSIsICJUbyBhZG1pdCB0aGF0IHRoZSBoaXN0b3JpY2FsIGRhdGEgd2VyZSB1bnJlbGlhYmxlIiwgIlRvIHN1Z2dlc3QgdGhhdCBlZmZpY2llbmN5IHNob3VsZCBiZSBhdm9pZGVkIl0sICJrZXkiOiAiQiJ9LCB7InN0ZW0iOiAiV2hhdCBkb2VzIHRoZSBwcm9mZXNzb3IgaW1wbHkgYWJvdXQgcG9saWNpZXMgc3VjaCBhcyB0YXhlcz8iLCAib3B0aW9ucyI6IFsiVGhleSBtYWtlIGVmZmljaWVuY3kgaW1wcm92ZW1lbnRzIHVubmVjZXNzYXJ5LiIsICJUaGV5IHdlcmUgZmlyc3Qgc3VnZ2VzdGVkIGluIHRoZSBlaWdodGVlbiBzaXh0aWVzLiIsICJUaGV5IGNhbiBzdG9wIHRoZSBzYXZpbmdzIGZyb20gYmVpbmcgY2FuY2VsbGVkIG91dCBieSBleHRyYSB1c2UuIiwgIlRoZXkgdXN1YWxseSBpbmNyZWFzZSBlbmVyZ3kgY29uc3VtcHRpb24uIl0sICJrZXkiOiAiQyJ9XSwgImF1ZGlvIjogImF1ZGlvL3RhbGsyLm00YSJ9LCB7InR5cGUiOiAidGFsayIsICJpZCI6ICJ0YWxrMyIsICJpbnRybyI6ICJMaXN0ZW4gdG8gYSB0YWxrIG9uIGEgcG9kY2FzdCBhYm91dCBsYW5ndWFnZS4iLCAidm9pY2UiOiAiYWZfaGVhcnQiLCAidGV4dCI6ICJNb3N0IG9mIHVzIHdlcmUgdGF1Z2h0IHRoYXQgaGVzaXRhdGlvbiBzb3VuZHMsIHRoZSBsaXR0bGUgdW1zIGFuZCB1aHMgd2UgbWFrZSB3aGlsZSB3ZSdyZSB0aGlua2luZywgYXJlIG1pc3Rha2VzLCBiaXRzIG9mIG5vaXNlIHRoYXQgY2FyZWZ1bCBzcGVha2VycyBzaG91bGQgZ2V0IHJpZCBvZi4gQnV0IGxpbmd1aXN0cyB3aG8gYWN0dWFsbHkgc3R1ZHkgcmVjb3JkZWQgY29udmVyc2F0aW9uIGhhdmUgY29tZSB0byBhIHJhdGhlciBkaWZmZXJlbnQgY29uY2x1c2lvbi4gVGhlc2Ugc291bmRzIGFyZW4ndCByYW5kb20uIFRoZXkgc2VlbSB0byBjYXJyeSBpbmZvcm1hdGlvbi4gT25lIHdlbGwta25vd24gc3R1ZHkgY29tcGFyZWQgdGhlIHR3byBtb3N0IGNvbW1vbiBoZXNpdGF0aW9uIHNvdW5kcyBpbiBFbmdsaXNoLiBJdCBmb3VuZCB0aGF0IHRoZSBzaG9ydGVyIG9uZSB0ZW5kcyB0byBjb21lIGJlZm9yZSBhIGJyaWVmIGRlbGF5LCB3aGlsZSB0aGUgbG9uZ2VyIG9uZSBzaWduYWxzIGEgbG9uZ2VyIHdhaXQuIEluIG90aGVyIHdvcmRzLCBzcGVha2VycyBzZWVtIHRvIGJlIGFubm91bmNpbmcsIHdpdGhvdXQgcmVhbGl6aW5nIGl0LCBob3cgbXVjaCB0aW1lIHRoZXkncmUgZ29pbmcgdG8gbmVlZC4gQW5kIGxpc3RlbmVycyBwaWNrIHVwIG9uIHRoaXMuIEluIGV4cGVyaW1lbnRzLCBwZW9wbGUgd2hvIGhlYXIgYSBoZXNpdGF0aW9uIGJlZm9yZSBhIHdvcmQgdGVuZCB0byByZW1lbWJlciB0aGF0IHdvcmQgYmV0dGVyIGxhdGVyLCBwb3NzaWJseSBiZWNhdXNlIHRoZSBwYXVzZSBtYWtlcyB0aGVtIHBheSBjbG9zZXIgYXR0ZW50aW9uLiBUaGF0IGRvZXNuJ3QgbWVhbiBoZXNpdGF0aW9ucyBhcmUgYWx3YXlzIHdlbGNvbWUuIEluIGEgam9iIGludGVydmlldyBvciBhIGZvcm1hbCBzcGVlY2gsIHRvbyBtYW55IG9mIHRoZW0gY2FuIG1ha2UgeW91IHNvdW5kIHVucHJlcGFyZWQsIGFuZCBhdWRpZW5jZXMgbm90aWNlLiBCdXQgdGhlIGlkZWEgdGhhdCBhIHBlcmZlY3Qgc3BlYWtlciBuZXZlciBoZXNpdGF0ZXMgaXMsIGZyYW5rbHksIGEgbXl0aC4gRXZlbiB0aGUgbW9zdCBmbHVlbnQgc3BlYWtlcnMgaGVzaXRhdGUuIFRoZXkganVzdCBkbyBpdCBhdCB0aGUgcmlnaHQgbW9tZW50cy4gU28gdGhlIG5leHQgdGltZSBzb21lb25lIHRlbGxzIHlvdSB0byBzdG9wIGhlc2l0YXRpbmcsIHlvdSBtaWdodCBwb2ludCBvdXQgdGhhdCB5b3UncmUgbm90IGJlaW5nIGNhcmVsZXNzLiBZb3UncmUgbWFuYWdpbmcgdGhlIGNvbnZlcnNhdGlvbi4iLCAicXVlc3Rpb25zIjogW3sic3RlbSI6ICJXaGF0IGlzIHRoZSBtYWluIHBvaW50IG9mIHRoZSB0YWxrPyIsICJvcHRpb25zIjogWyJIZXNpdGF0aW9uIHNvdW5kcyBzaG91bGQgYmUgcmVtb3ZlZCBmcm9tIGZvcm1hbCBzcGVlY2guIiwgIkxpc3RlbmVycyBmaW5kIGhlc2l0YXRpb24gc291bmRzIGFubm95aW5nLiIsICJIZXNpdGF0aW9uIHNvdW5kcyBjYW4gc2VydmUgdXNlZnVsIHB1cnBvc2VzIGluIGNvbnZlcnNhdGlvbi4iLCAiT25seSBmbHVlbnQgc3BlYWtlcnMgdXNlIGhlc2l0YXRpb24gc291bmRzIGNvcnJlY3RseS4iXSwgImtleSI6ICJDIn0sIHsic3RlbSI6ICJBY2NvcmRpbmcgdG8gdGhlIHNwZWFrZXIsIHdoYXQgZGlkIG9uZSBzdHVkeSBmaW5kIGFib3V0IHRoZSB0d28gbW9zdCBjb21tb24gaGVzaXRhdGlvbiBzb3VuZHM/IiwgIm9wdGlvbnMiOiBbIlRoZXkgc2lnbmFsIGRlbGF5cyBvZiBkaWZmZXJlbnQgbGVuZ3Rocy4iLCAiT25lIGlzIG1vcmUgY29tbW9uIGluIGZvcm1hbCBzcGVlY2guIiwgIk9uZSBpcyB1c2VkIG1haW5seSBieSBmbHVlbnQgc3BlYWtlcnMuIiwgIlRoZXkgYXBwZWFyIGF0IHRoZSBiZWdpbm5pbmcgYW5kIHRoZSBlbmQgb2Ygc2VudGVuY2VzLiJdLCAia2V5IjogIkEifSwgeyJzdGVtIjogIldoeSBkb2VzIHRoZSBzcGVha2VyIG1lbnRpb24gam9iIGludGVydmlld3M/IiwgIm9wdGlvbnMiOiBbIlRvIGRlc2NyaWJlIGEgc3R1ZHkgb24gaGVzaXRhdGlvbiIsICJUbyBzaG93IHRoYXQgaW50ZXJ2aWV3ZXJzIGhlc2l0YXRlIHRvbyIsICJUbyBhcmd1ZSB0aGF0IGhlc2l0YXRpbmcgaGVscHMgc3BlYWtlcnMgc291bmQgY29uZmlkZW50IiwgIlRvIGFja25vd2xlZGdlIGEgc2l0dWF0aW9uIGluIHdoaWNoIGhlc2l0YXRpbmcgY2FuIGNhdXNlIHByb2JsZW1zIl0sICJrZXkiOiAiRCJ9LCB7InN0ZW0iOiAiV2hhdCBkb2VzIHRoZSBzcGVha2VyIG1lYW4gYnkgY2FsbGluZyB0aGUgaWRlYSBvZiBhIHNwZWFrZXIgd2hvIG5ldmVyIGhlc2l0YXRlcyBcImEgbXl0aFwiPyIsICJvcHRpb25zIjogWyJTdWNoIGEgc3BlYWtlciB3b3VsZCBiZSBtb3JlIHBlcnN1YXNpdmUuIiwgIkV2ZW4gdmVyeSBmbHVlbnQgc3BlYWtlcnMgaGVzaXRhdGUuIiwgIkhlc2l0YXRpb24gc291bmRzIHdlcmUgaW52ZW50ZWQgcmVjZW50bHkuIiwgIk1vc3QgcGVvcGxlIHRoaW5rIGhlc2l0YXRpb24gaXMgcmFyZS4iXSwgImtleSI6ICJCIn1dLCAiYXVkaW8iOiAiYXVkaW8vdGFsazMubTRhIn1dfV19</script>
+<script>
+const DATA = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(document.getElementById("test-data").textContent.trim()), c => c.charCodeAt(0))));
+// ETS Updated TOEFL iBT Test Overview, Table 3 (Listening column, 0-30 -> 1-6 band). Used as an approximation for raw/30
+// when the test has no conversion table of its own (DATA.conversion: [[raw, band, CEFR], ...], e.g. the Official Guide's).
+const BAND = [[28, 6], [26, 5.5], [22, 5], [20, 4.5], [17, 4], [13, 3.5], [9, 3], [6, 2.5], [4, 2], [2, 1.5], [0, 1]];
+const CEFR = b => b >= 6 ? "C2" : b >= 5 ? "C1" : b >= 4 ? "B2" : b >= 3 ? "B1" : b >= 2 ? "A2" : "A1";
+const TYPE_NAMES = { choose: "Listen and Choose a Response", conversation: "Listen to a Conversation",
+                     announcement: "Listen to an Announcement", talk: "Listen to an Academic Talk" };
+const LETTERS = ["A", "B", "C", "D"];
+const BY_MODULE = DATA.numbering === "module";   // ETS numbering restarts at 1 in each module
+
+// Flatten stages into a sequence of steps: a stage screen, then per block an audio step and its question steps.
+const steps = [];
+let qNum = 0;
+DATA.stages.forEach((stage, si) => {
+  steps.push({ kind: "stage", stage, si });
+  let local = 0;
+  stage.blocks.forEach(block => {
+    steps.push({ kind: "audio", block, stage: si });
+    const qs = block.type === "choose"
+      ? [Object.assign({ stem: "Choose the best response." }, (block.questions || [])[0] || {}, { options: block.options, key: block.key })]
+      : block.questions;
+    qs.forEach((q, i) => {
+      local += 1;
+      steps.push({ kind: "q", block, q, stage: si, n: ++qNum, qi: i, label: BY_MODULE ? `${si + 1}.${local}` : String(qNum), local });
+    });
+  });
+});
+const TOTAL = qNum;
+const stageCount = si => steps.filter(s => s.kind === "q" && s.stage === si).length;
+const answers = {};
+let pos = -1, started = null, finished = false, deadline = null, current = null;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const clock = s => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+
+function tick() {
+  if (!started || finished) return;
+  if (deadline) {
+    const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+    $("hTime").textContent = clock(left);
+    $("hTime").style.color = left <= 60 ? "#fdba74" : "";
+    if (left === 0) timeUp();
+  } else {
+    $("hTime").textContent = clock(Math.floor((Date.now() - started) / 1000));
+  }
+}
+setInterval(tick, 250);
+
+// Module time is up: stop the audio and skip what is left of the module (those items stay unanswered).
+function timeUp() {
+  const cur = steps[pos], si = cur.kind === "stage" ? cur.si : cur.stage;
+  deadline = null;
+  if (current) { current.pause(); current = null; }
+  let k = pos + 1;
+  while (k < steps.length && steps[k].kind !== "stage") k++;
+  pos = k - 1;
+  $("screen").innerHTML = `<h2>Time is up</h2><p>Time for ${esc(DATA.stages[si].name)} is up. Unanswered questions score no points.</p>
+    <div class="row"><span></span><button id="go">Continue</button></div>`;
+  $("go").onclick = next;
+}
+
+function intro() {
+  $("hLeft").textContent = "Listening";
+  const timed = DATA.stages.every(s => s.minutes);
+  $("screen").innerHTML = `
+    <h1>${esc(DATA.title)}</h1>
+    ${DATA.source ? `<p class="muted">${esc(DATA.source)}</p>` : ""}
+    <p>${DATA.ets_audio ? "Official ETS audio" : "Format based on ETS's <i>Updated TOEFL iBT Test Overview</i>"}: four task types,
+      ${TOTAL} questions in ${DATA.stages.length === 2 ? "two modules" : DATA.stages.length + " parts"}${timed ? ` (${DATA.stages.map(s => `${s.name}: ${stageCount(DATA.stages.indexOf(s))} questions, ~${s.minutes} min`).join("; ")})` : ""}.</p>
+    <ul>
+      <li><b>Listen and Choose a Response:</b> you only hear a statement or question (it is not written), then choose the best of 4 written replies.</li>
+      <li><b>Listen to a Conversation:</b> a conversation between two people, then 2 questions.</li>
+      <li><b>Listen to an Announcement:</b> an announcement, then 2 questions.</li>
+      <li><b>Listen to an Academic Talk:</b> a lecture or podcast, then 4 questions.</li>
+    </ul>
+    <div class="note">Each recording plays <b>only once</b>, and you cannot go back to an earlier question. The questions appear when the recording ends.
+      ${timed ? "Each module has its own timer, which starts at <i>Continue</i>; when it runs out, the rest of the module is skipped. " : ""}
+      ${DATA.conversion ? "Some questions are unscored (as on the real test); you see which ones only at the end. " : ""}
+      Notes on paper are allowed. Do not reload the page during the test.</div>
+    <div class="row"><span class="muted">Put on headphones and set the volume before you start.</span>
+      <button id="go">Start the test</button></div>`;
+  $("go").onclick = () => { started = Date.now(); window.onbeforeunload = () => finished ? undefined : "Test is in progress."; next(); };
+}
+
+function next() {
+  pos += 1;
+  if (pos >= steps.length) return results();
+  const st = steps[pos];
+  if (st.kind === "stage") return stageScreen(st);
+  if (st.kind === "audio") return audioScreen(st);
+  return questionScreen(st);
+}
+
+function stageScreen(st) {
+  deadline = null;
+  $("hLeft").textContent = `Listening · ${st.stage.name}`;
+  $("hQ").textContent = "";
+  const count = stageCount(st.si);
+  const text = st.stage.note || (st.stage.minutes
+    ? `${count} questions, about ${st.stage.minutes} minutes. The timer starts when you click <i>Continue</i>.`
+    : st.si === 0
+      ? "The first stage mixes easier and harder items. On the real test, your result here decides which second stage you get."
+      : "The second stage is harder (the upper module), the one a test taker gets after a strong first stage.");
+  $("screen").innerHTML = `<h2>${esc(st.stage.name)}</h2><p>${text}</p>${st.stage.minutes ? "" : `<p class="muted">${count} questions.</p>`}
+    <div class="row"><span></span><button id="go">Continue</button></div>`;
+  $("go").onclick = () => { if (st.stage.minutes) deadline = Date.now() + st.stage.minutes * 60000; next(); };
+}
+
+function qHeader(st) {
+  const total = BY_MODULE ? stageCount(st.stage) : TOTAL;
+  return `Question ${BY_MODULE ? st.local : st.n} of ${total}`;
+}
+
+function audioScreen(st) {
+  const b = st.block;
+  $("hLeft").textContent = `Listening · ${DATA.stages[st.stage].name} · ${TYPE_NAMES[b.type]}`;
+  $("hQ").textContent = qHeader(steps.slice(pos).find(s => s.kind === "q"));
+  const two = b.type === "conversation";
+  $("screen").innerHTML = `
+    <h2>${esc(TYPE_NAMES[b.type])}</h2>
+    ${b.type !== "choose" && b.intro ? `<p class="muted">${esc(b.intro)}</p>` : ""}
+    <div class="speaker"><div class="avatar" id="av1"></div>${two ? '<div class="avatar" id="av2"></div>' : ""}
+      <div class="bars" id="bars"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="progress"><div id="prog"></div></div>
+    <div class="row"><span class="muted" id="status">The recording plays only once.</span><button id="play">▶ Play</button></div>`;
+  const audio = new Audio(b.audio);
+  current = audio;
+  audio.preload = "auto";
+  $("play").onclick = () => {
+    $("play").disabled = true;
+    $("status").textContent = "Listening…";
+    ["av1", "av2"].forEach(id => $(id) && $(id).classList.add("on"));
+    $("bars").classList.add("on");
+    audio.play().catch(e => { $("status").textContent = "The audio could not be played: " + e.message; $("play").disabled = false; });
+  };
+  audio.ontimeupdate = () => { if (audio.duration) $("prog").style.width = (100 * audio.currentTime / audio.duration) + "%"; };
+  audio.onended = () => { if (current !== audio) return; current = null; $("bars").classList.remove("on"); setTimeout(next, 600); };
+  audio.onerror = () => { $("status").textContent = `Missing audio file ${b.audio}.`; };
+}
+
+function questionScreen(st) {
+  $("hQ").textContent = qHeader(st);
+  const q = st.q;
+  $("screen").innerHTML = `
+    <p class="stem">${esc(q.stem)}</p>
+    <div class="options">${q.options.map((o, i) => `<label><input type="radio" name="opt" value="${LETTERS[i]}">
+      <span class="letter">${LETTERS[i]}.</span><span>${esc(o)}</span></label>`).join("")}</div>
+    <div class="row"><span class="muted">There is no going back after <i>Next</i>.</span><button id="nx" disabled>Next</button></div>`;
+  document.querySelectorAll("input[name=opt]").forEach(r => r.onchange = () => { $("nx").disabled = false; });
+  $("nx").onclick = () => {
+    answers[st.n] = document.querySelector("input[name=opt]:checked").value;
+    next();
+  };
+}
+
+function results() {
+  finished = true;
+  deadline = null;
+  window.onbeforeunload = null;
+  const secs = Math.round((Date.now() - started) / 1000);
+  const qs = steps.filter(s => s.kind === "q");
+  const scoredQs = qs.filter(s => !s.q.unscored);
+  const byType = {}, byQType = {};
+  let raw = 0;
+  scoredQs.forEach(s => {
+    const ok = answers[s.n] === s.q.key;
+    raw += ok ? 1 : 0;
+    const t = byType[s.block.type] || (byType[s.block.type] = [0, 0]);
+    t[0] += ok ? 1 : 0; t[1] += 1;
+    if (s.q.qtype) { const u = byQType[s.q.qtype] || (byQType[s.q.qtype] = [0, 0]); u[0] += ok ? 1 : 0; u[1] += 1; }
+  });
+  const max = scoredQs.length;
+  let band, cefr, how;
+  if (DATA.conversion) {
+    const row = DATA.conversion.find(([r]) => raw >= r) || DATA.conversion[DATA.conversion.length - 1];
+    [band, cefr] = [row[1], row[2]];
+    how = (DATA.conversion_note || "the test's own conversion table") + ". The real test is adaptive.";
+  } else {
+    band = BAND.find(([min]) => Math.round(raw * 30 / max) >= min)[1];
+    cefr = CEFR(band);
+    how = `Rough estimate: ${raw}/${max} scaled to 0–30, then read from ETS's Table 3 (Listening). The real test is adaptive and scored differently.`;
+  }
+  const unscoredOk = qs.filter(s => s.q.unscored && answers[s.n] === s.q.key).length;
+  const unscoredN = qs.length - max;
+  const code = `${DATA.id} | raw ${raw}/${max}${unscoredN ? ` (+ unscored ${unscoredOk}/${unscoredN})` : ""} | band ${band} (${cefr}) | ${Math.floor(secs / 60)} min | ` +
+               qs.map(s => `${s.label}${answers[s.n] || "-"}${s.q.unscored ? "*" : ""}`).join(" ");
+  const short = t => TYPE_NAMES[t].replace("Listen to an ", "").replace("Listen to a ", "").replace("Listen and ", "");
+  $("hLeft").textContent = "Listening · Results";
+  $("hQ").textContent = "";
+  $("hTime").textContent = "";
+  $("screen").innerHTML = `
+    <h2>Result</h2>
+    <div class="big">${raw} / ${max}</div>
+    <p>Listening band: <b>${band}</b> (${cefr}). <span class="muted">${how}</span></p>
+    ${unscoredN ? `<p class="muted">Unscored questions (marked *): ${unscoredOk} / ${unscoredN} correct. They do not count, as on the real test.</p>` : ""}
+    <table><tr><th>Task type</th><th>Correct</th></tr>
+      ${Object.entries(byType).map(([t, [a, n]]) => `<tr><td>${TYPE_NAMES[t]}</td><td>${a} / ${n}</td></tr>`).join("")}</table>
+    ${Object.keys(byQType).length ? `<table style="margin-top:12px"><tr><th>Question type (ETS)</th><th>Correct</th></tr>
+      ${Object.entries(byQType).map(([t, [a, n]]) => `<tr><td>${esc(t)}</td><td>${a} / ${n}</td></tr>`).join("")}</table>` : ""}
+    <h2 style="margin-top:24px">Send this to your coach</h2>
+    <pre id="code">${esc(code)}</pre>
+    <div class="row"><button class="secondary" id="copy">Copy</button><button class="secondary" id="dl">Download .json</button></div>
+    <h2 style="margin-top:24px">Your answers</h2>
+    <table><tr><th>#</th><th>Task</th><th>Yours</th><th>Correct</th><th></th></tr>
+      ${qs.map(s => {
+        const ok = answers[s.n] === s.q.key;
+        return `<tr><td>${s.label}${s.q.unscored ? "*" : ""}</td><td>${short(s.block.type)}${s.q.qtype ? ` · ${esc(s.q.qtype)}` : ""}
+        <div class="muted">${esc(s.q.stem === "Choose the best response." ? "" : s.q.stem)}</div>
+        ${s.q.explanation ? `<details><summary>Explanation</summary><div class="muted" style="white-space:pre-line">${esc(s.q.explanation)}</div></details>` : ""}</td>
+        <td>${answers[s.n] || "–"}</td><td>${s.q.key}</td><td class="${ok ? "ok" : "no"}">${ok ? "✓" : "✗"}</td></tr>`;
+      }).join("")}</table>
+    <details><summary>Transcripts (after the test)</summary>
+      ${DATA.stages.flatMap(st => st.blocks).map(b => `<p><b>${b.id}</b> · ${TYPE_NAMES[b.type]}<br>${
+        b.transcript ? esc(b.transcript).replace(/\n/g, "<br>")
+        : (b.intro ? `<i>Narrator: ${esc(b.intro)}</i><br>` : "") + (b.type === "choose" ? esc(b.prompt)
+          : b.type === "conversation" ? b.turns.map(t => `<b>${t[0]}:</b> ${esc(t[2])}`).join("<br>") : esc(b.text))}</p>`).join("")}
+    </details>`;
+  $("copy").onclick = () => navigator.clipboard.writeText(code).then(() => { $("copy").textContent = "Copied"; });
+  $("dl").onclick = () => {
+    const blob = new Blob([JSON.stringify({ id: DATA.id, raw, total: max, band, cefr, seconds: secs,
+      answers: Object.fromEntries(qs.map(s => [s.label, answers[s.n] || null])), byType, byQType }, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${DATA.id}-result.json`;
+    a.click();
+  };
+}
+
+intro();
+</script>
+</body>
+</html>

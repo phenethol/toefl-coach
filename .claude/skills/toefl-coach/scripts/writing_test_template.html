@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  :root {
+    --bg: #eef1f5; --card: #ffffff; --ink: #22344a; --muted: #6b7787; --line: #d5dbe3;
+    --accent: #2563eb; --accent-soft: #e8efff; --good: #15803d; --bad: #b42318; --header: #22344a; --warn: #ea580c;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.5 -apple-system, "Segoe UI", Arial, sans-serif; }
+  header { background: var(--header); color: #fff; display: flex; justify-content: space-between; align-items: center;
+           padding: 12px 24px; font-weight: 600; gap: 12px; flex-wrap: wrap; position: sticky; top: 0; z-index: 5; }
+  header .right { font-weight: 400; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  #hTime { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 76px; text-align: right; }
+  #hTime.low { color: #fdba74; }
+  header button { padding: 5px 12px; font-size: 14px; background: #3a4f69; }
+  main { max-width: 1100px; margin: 28px auto; padding: 0 16px; }
+  main.narrow { max-width: 760px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 28px; }
+  h1 { font-size: 26px; margin: 0 0 12px; }
+  h2 { font-size: 20px; margin: 0 0 14px; }
+  .muted { color: var(--muted); font-size: 15px; }
+  button { font: inherit; border-radius: 10px; border: 0; padding: 11px 22px; cursor: pointer; background: var(--accent); color: #fff; }
+  button:disabled { background: #a3adba; cursor: default; }
+  button.secondary { background: var(--accent-soft); color: var(--accent); }
+  .row { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; gap: 12px; flex-wrap: wrap; }
+  .row .group { display: flex; gap: 10px; }
+  .note { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 12px 14px; font-size: 15px; margin-top: 14px; }
+  .timeup { background: #fef2f2; border: 1px solid #fecaca; color: var(--bad); border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; font-weight: 600; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 7px 6px; text-align: left; vertical-align: top; }
+  .ok { color: var(--good); font-weight: 700; } .no { color: var(--bad); font-weight: 700; }
+  .big { font-size: 44px; font-weight: 800; margin: 4px 0; }
+  pre { white-space: pre-wrap; background: #f6f8fb; border: 1px solid var(--line); border-radius: 8px; padding: 12px; font-size: 14px; }
+  footer { text-align: center; color: #a3adba; font-size: 13px; margin: 28px 0; }
+
+  /* Build a Sentence */
+  .instr { font-weight: 700; margin-bottom: 18px; }
+  .turn { display: flex; gap: 14px; align-items: flex-start; margin: 14px 0; }
+  .avatar { width: 52px; height: 52px; border-radius: 50%; background: #c9d3df; position: relative; overflow: hidden; flex: none; }
+  .avatar::before { content: ""; position: absolute; width: 20px; height: 20px; border-radius: 50%; background: #8a9ab0; left: 16px; top: 10px; }
+  .avatar::after { content: ""; position: absolute; width: 42px; height: 36px; border-radius: 50%; background: #8a9ab0; left: 5px; top: 34px; }
+  .avatar.b { background: #d8e3f7; } .avatar.b::before, .avatar.b::after { background: #7f9bd1; }
+  .bubble { background: #f6f8fb; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+  .frame { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 6px; line-height: 2; }
+  .slot { min-width: 92px; min-height: 38px; border: 0; border-bottom: 2px solid #8a9ab0; border-radius: 6px 6px 0 0;
+          background: #fff; color: var(--ink); padding: 3px 10px; font-size: 17px; }
+  .slot.filled { background: var(--accent-soft); border-bottom-color: var(--accent); }
+  .slot:disabled { cursor: default; }
+  .bank { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; padding-top: 18px; border-top: 1px dashed var(--line); }
+  .chip { background: #fff; color: var(--ink); border: 1px solid #b8c3d1; padding: 7px 14px; border-radius: 8px; font-size: 17px; }
+  .chip:hover:not(:disabled) { border-color: var(--accent); }
+  .chip.used { visibility: hidden; }
+  .review { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .review button { background: #f6f8fb; color: var(--ink); border: 1px solid var(--line); text-align: left; }
+  .review button.done { border-color: var(--accent); }
+
+  /* Email and Academic Discussion */
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 820px) { .split { grid-template-columns: 1fr; } }
+  .prompt p { margin: 0 0 12px; }
+  .prompt ul { margin: 0 0 12px; padding-left: 22px; }
+  .post { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 12px 0; background: #fbfcfe; }
+  .post .who { display: flex; gap: 10px; align-items: center; font-weight: 700; margin-bottom: 6px; }
+  .post .avatar { width: 36px; height: 36px; }
+  .post .avatar::before { width: 14px; height: 14px; left: 11px; top: 7px; }
+  .post .avatar::after { width: 30px; height: 26px; left: 3px; top: 23px; }
+  .post.prof { background: #f3f6fb; }
+  .students { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .students { grid-template-columns: 1fr; } }
+  .mailhead { border: 1px solid var(--line); border-bottom: 0; border-radius: 10px 10px 0 0; padding: 8px 12px; font-size: 15px; background: #f6f8fb; }
+  .mailhead div { padding: 2px 0; }
+  textarea { width: 100%; min-height: 380px; resize: vertical; font: 17px/1.55 -apple-system, "Segoe UI", Arial, sans-serif;
+             color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+  textarea.mail { border-radius: 0 0 10px 10px; min-height: 340px; }
+  textarea:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+  textarea[readonly] { background: #f6f8fb; }
+  .tools { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+  .tools button { padding: 3px 10px; font-size: 13px; font-weight: 700; background: #fff; color: var(--ink);
+                  border: 1px solid #22344a; border-radius: 4px; }
+  .tools button:disabled { color: #a3adba; border-color: #c9d3df; background: #fff; }
+  .tools #wcToggle { margin-left: 12px; }
+  .tools #wc { margin-left: 14px; font-size: 15px; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<header>
+  <div id="hLeft">Writing</div>
+  <div class="right"><span id="hQ"></span><span id="hTime"></span><button id="hToggle" hidden>Hide Time</button></div>
+</header>
+<main class="narrow" id="main"><div class="card" id="screen"></div></main>
+<footer>Practice simulation. Not an official ETS product.</footer>
+
+<script id="test-data" type="application/octet-stream">__DATA__</script>
+<script>
+const DATA = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(document.getElementById("test-data").textContent.trim()), c => c.charCodeAt(0))));
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const STORE = "toefl-writing-test:" + DATA.id;
+const BAS = DATA.bas ? DATA.bas.items : [];
+const TASKS = [
+  DATA.bas && { key: "bas", name: "Build a Sentence", minutes: DATA.bas.minutes || 6 },
+  DATA.email && { key: "email", name: "Write an Email", minutes: DATA.email.minutes || 7 },
+  DATA.discussion && { key: "discussion", name: "Write for an Academic Discussion", minutes: DATA.discussion.minutes || 10 },
+].filter(Boolean);
+const TOTAL_Q = BAS.length + (DATA.email ? 1 : 0) + (DATA.discussion ? 1 : 0);
+
+// ---------- state (saved in the browser so a reload does not lose answers) ----------
+function fresh() {
+  return { step: "intro", task: 0, item: 0, bas: BAS.map(it => it.parts.filter(p => p === null).map(() => null)),
+           email: "", discussion: "", left: {}, used: {}, finished: false, hideTime: false, hideWc: false, started: null };
+}
+let S = fresh();
+function load() { try { const v = JSON.parse(localStorage.getItem(STORE)); if (v && v.bas) return v; } catch (e) {} return null; }
+function save() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} }
+function clearSaved() { try { localStorage.removeItem(STORE); } catch (e) {} }
+
+// ---------- timer ----------
+let deadline = null, tick = null;
+const fmt = s => { s = Math.max(0, Math.ceil(s)); return `${String(Math.floor(s / 3600)).padStart(2, "0")}:${String(Math.floor(s / 60) % 60).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`; };
+function startTimer(task) {
+  const total = task.minutes * 60;
+  if (S.left[task.key] === undefined) S.left[task.key] = total;
+  deadline = Date.now() + S.left[task.key] * 1000;
+  $("hToggle").hidden = false;
+  clearInterval(tick);
+  const update = () => {
+    const left = (deadline - Date.now()) / 1000;
+    S.left[task.key] = Math.max(0, left);
+    S.used[task.key] = total - S.left[task.key];
+    $("hTime").textContent = S.hideTime ? "" : fmt(left);
+    $("hTime").classList.toggle("low", left <= 60);
+    save();
+    if (left <= 0) { stopTimer(); timeUp(task); }
+  };
+  update();
+  tick = setInterval(update, 250);
+}
+function stopTimer() { clearInterval(tick); tick = null; deadline = null; }
+$("hToggle").onclick = () => { S.hideTime = !S.hideTime; $("hToggle").textContent = S.hideTime ? "Show Time" : "Hide Time"; save(); };
+window.addEventListener("beforeunload", e => { if (tick) { e.preventDefault(); e.returnValue = ""; } });
+
+function header(q) {
+  $("hQ").textContent = q ? `Question ${q} of ${TOTAL_Q}` : "";
+  if (!tick) { $("hTime").textContent = ""; $("hToggle").hidden = true; }
+  $("hToggle").textContent = S.hideTime ? "Show Time" : "Hide Time";
+}
+function layout(wide) { $("main").className = wide ? "" : "narrow"; window.scrollTo(0, 0); }
+
+// ---------- flow ----------
+function go(step) { S.step = step; save(); render(); }
+function render() {
+  const t = TASKS[S.task];
+  if (S.step === "intro") return intro();
+  if (S.step === "directions") return directions(t);
+  if (S.step === "bas") return basItem();
+  if (S.step === "review") return review();
+  if (S.step === "email") return emailTask();
+  if (S.step === "discussion") return discussionTask();
+  if (S.step === "results") return results();
+}
+function nextTask() {
+  stopTimer();
+  S.task += 1;
+  go(S.task < TASKS.length ? "directions" : "results");
+}
+function timeUp(task) {
+  if (task.key === "bas") { S.timeUp = "bas"; save(); return go("bas"); }
+  S.timeUp = task.key; save(); render();
+}
+
+function intro() {
+  layout(false); header(0);
+  const rows = TASKS.map(t => `<tr><td>${t.name}</td><td>${t.key === "bas" ? BAS.length : 1}</td><td>${t.minutes} min</td></tr>`).join("");
+  $("screen").innerHTML = `
+    <h1>${esc(DATA.title)}</h1>
+    ${DATA.source ? `<p class="muted">${esc(DATA.source)}</p>` : ""}
+    <table><tr><th>Task</th><th>Questions</th><th>Time</th></tr>${rows}</table>
+    <div class="note">
+      Each task has its own timer, which starts when you open the task. When time runs out, the answer is locked.
+      Inside Build a Sentence you can go back (Back, Review), but you cannot return to an earlier task.
+      The spellchecker is off. Answers are saved in the browser, so a reload does not delete your text.
+    </div>
+    <div class="row"><span></span><button id="begin">Begin</button></div>`;
+  $("begin").onclick = () => { S.started = new Date().toISOString(); go("directions"); };
+}
+
+function directions(t) {
+  layout(false); header(0);
+  const text = {
+    bas: `Make an appropriate sentence. Move the words and phrases into the blanks to answer the first speaker. One choice may not be used. You have about ${t.minutes} minute${t.minutes === 1 ? "" : "s"} for all ${BAS.length} questions.`,
+    email: `You will read a situation and write an email. You have ${t.minutes} minutes.`,
+    discussion: `A professor has posted a question about a topic, and students have responded. Write a post that contributes to the discussion. You have ${t.minutes} minutes.`,
+  }[t.key];
+  $("screen").innerHTML = `<h2>${t.name}</h2><p>${text}</p>
+    <div class="row"><span class="muted">The timer starts when you click Continue.</span><button id="cont">Continue</button></div>`;
+  $("cont").onclick = () => go(t.key === "bas" ? "bas" : t.key);
+}
+
+// ---------- Build a Sentence ----------
+function joinParts(parts, fill) {
+  let out = "", k = 0;
+  parts.forEach(p => {
+    const w = p === null ? (fill[k++] || "____") : p;
+    if (!out) out = w;
+    else if (/^[.?!,]/.test(w) || out.endsWith("—")) out += w;
+    else out += " " + w;
+  });
+  return out.charAt(0).toUpperCase() + out.slice(1);  // first-word chunks are lowercase on screen, as on the test
+}
+const basWords = i => S.bas[i].map(ci => ci === null ? null : BAS[i].chunks[ci]);
+const basCorrect = i => (BAS[i].keys || [BAS[i].key]).some(k => k.every((w, j) => basWords(i)[j] === w));
+
+function basItem() {
+  const task = TASKS[S.task];
+  layout(false);
+  if (!tick && S.timeUp !== "bas") startTimer(task);
+  const i = S.item, it = BAS[i], ans = S.bas[i], locked = S.timeUp === "bas";
+  header(i + 1);
+  let k = 0;
+  const frame = it.parts.map(p => {
+    if (p !== null) return `<span>${esc(p)}</span>`;
+    const j = k++, ci = ans[j];
+    return `<button class="slot ${ci !== null ? "filled" : ""}" data-slot="${j}" ${locked ? "disabled" : ""}>${ci !== null ? esc(it.chunks[ci]) : "&nbsp;"}</button>`;
+  }).join("");
+  const bank = it.chunks.map((c, ci) => `<button class="chip ${ans.includes(ci) ? "used" : ""}" data-chip="${ci}" ${locked ? "disabled" : ""}>${esc(c)}</button>`).join("");
+  $("screen").innerHTML = `
+    ${locked ? `<div class="timeup">Time is up. Your Build a Sentence answers are locked.</div>` : ""}
+    <div class="instr">Make an appropriate sentence.</div>
+    <div class="turn"><div class="avatar"></div><div class="bubble">${esc(it.context)}</div></div>
+    <div class="turn"><div class="avatar b"></div><div class="bubble frame">${frame}</div></div>
+    <div class="bank">${bank}</div>
+    <div class="row">
+      <div class="group"><button class="secondary" id="back" ${i === 0 ? "disabled" : ""}>Back</button><button class="secondary" id="rev">Review</button></div>
+      <button id="next">${locked ? "Continue" : i === BAS.length - 1 ? "Finish" : "Next"}</button>
+    </div>`;
+  document.querySelectorAll("[data-chip]").forEach(b => b.onclick = () => {
+    const empty = ans.indexOf(null);
+    if (empty === -1) return;
+    ans[empty] = +b.dataset.chip; save(); basItem();
+  });
+  document.querySelectorAll("[data-slot]").forEach(b => b.onclick = () => { ans[+b.dataset.slot] = null; save(); basItem(); });
+  $("back").onclick = () => { S.item -= 1; save(); basItem(); };
+  $("rev").onclick = () => go("review");
+  $("next").onclick = () => {
+    if (locked) { S.timeUp = null; return nextTask(); }
+    if (i < BAS.length - 1) { S.item += 1; save(); return basItem(); }
+    go("review");
+  };
+}
+
+function review() {
+  layout(false); header(0);
+  const locked = S.timeUp === "bas";
+  const cells = BAS.map((it, i) => {
+    const done = !S.bas[i].includes(null);
+    return `<button class="${done ? "done" : ""}" data-i="${i}">Question ${i + 1}<br><span class="muted">${done ? "Answered" : "Not answered"}</span></button>`;
+  }).join("");
+  const open = S.bas.filter(a => a.includes(null)).length;
+  $("screen").innerHTML = `<h2>Review</h2><div class="review">${cells}</div>
+    <div class="row"><span class="muted">${open ? `Unanswered: ${open}.` : "Everything is answered."} Once you finish, you cannot return to Build a Sentence.</span>
+    <button id="end">${locked ? "Continue" : "End Build a Sentence"}</button></div>`;
+  document.querySelectorAll("[data-i]").forEach(b => b.onclick = () => { S.item = +b.dataset.i; go("bas"); });
+  $("end").onclick = () => {
+    if (!locked && !confirm("Finish Build a Sentence? You cannot return to these questions.")) return;
+    S.timeUp = null; nextTask();
+  };
+}
+
+// ---------- Email and Academic Discussion ----------
+const countWords = s => (s.trim().match(/\S+/g) || []).length;
+function writingBox(key, mail) {
+  const locked = S.timeUp === key;
+  return `${locked ? `<div class="timeup">Time is up. Your text is locked.</div>` : ""}
+    <div class="tools">
+      <button id="tCut" ${locked ? "disabled" : ""}>Cut</button><button id="tPaste" disabled>Paste</button>
+      <button id="tUndo" disabled>Undo</button><button id="tRedo" disabled>Redo</button>
+      <button id="wcToggle">${S.hideWc ? "Show Word Count" : "Hide Word Count"}</button><span id="wc"></span>
+    </div>
+    ${mail ? `<div class="mailhead"><div><b>To:</b> ${esc(DATA.email.to)}</div><div><b>Subject:</b> ${esc(DATA.email.subject)}</div></div>` : ""}
+    <textarea id="resp" class="${mail ? "mail" : ""}" spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"
+      data-gramm="false" data-enable-grammarly="false" ${locked ? "readonly" : ""} placeholder="${mail ? "" : "Write your post here."}"></textarea>`;
+}
+// Cut, Paste, Undo and Redo work like the test's toolbar: Paste only inserts what was cut in this box.
+let clip = "";
+function wireBox(key) {
+  const box = $("resp"), locked = S.timeUp === key;
+  const wc = () => { $("wc").textContent = S.hideWc ? "" : countWords(box.value); };
+  const hist = { stack: [S[key]], pos: 0 };
+  let pending = null;
+  const buttons = () => {
+    $("tPaste").disabled = locked || !clip;
+    $("tUndo").disabled = locked || hist.pos === 0;
+    $("tRedo").disabled = locked || hist.pos === hist.stack.length - 1;
+  };
+  const record = () => {
+    clearTimeout(pending); pending = null;
+    if (box.value === hist.stack[hist.pos]) return;
+    hist.stack = hist.stack.slice(0, hist.pos + 1); hist.stack.push(box.value); hist.pos += 1; buttons();
+  };
+  const changed = () => { S[key] = box.value; save(); wc(); };
+  const jump = d => { record(); hist.pos += d; box.value = hist.stack[hist.pos]; changed(); buttons(); box.focus(); };
+  box.value = S[key];
+  box.oninput = () => { changed(); clearTimeout(pending); pending = setTimeout(record, 700); };
+  $("tCut").onclick = () => {
+    const [s, e] = [box.selectionStart, box.selectionEnd];
+    if (locked || s === e) return;
+    record(); clip = box.value.slice(s, e); box.setRangeText("", s, e, "start"); changed(); record(); box.focus();
+  };
+  $("tPaste").onclick = () => {
+    if (locked || !clip) return;
+    record(); box.setRangeText(clip, box.selectionStart, box.selectionEnd, "end"); changed(); record(); box.focus();
+  };
+  $("tUndo").onclick = () => { if (hist.pos > 0 || pending) { record(); if (hist.pos > 0) jump(-1); } };
+  $("tRedo").onclick = () => { if (hist.pos < hist.stack.length - 1) jump(1); };
+  $("wcToggle").onclick = () => { S.hideWc = !S.hideWc; $("wcToggle").textContent = S.hideWc ? "Show Word Count" : "Hide Word Count"; save(); wc(); };
+  wc(); buttons();
+  if (S.timeUp !== key) box.focus();
+  $("next").onclick = () => {
+    if (S.timeUp !== key && !confirm("Finish this task? You cannot return to it.")) return;
+    S.timeUp = null; nextTask();
+  };
+}
+function emailTask() {
+  const task = TASKS[S.task], e = DATA.email;
+  layout(true); header(BAS.length + 1);
+  if (!tick && S.timeUp !== "email") startTimer(task);
+  $("screen").innerHTML = `<div class="split">
+    <div class="prompt">
+      <p>${esc(e.scenario)}</p>
+      <p>${esc(e.instruction)}</p>
+      <ul>${e.bullets.map(b => `<li>${esc(b)}</li>`).join("")}</ul>
+      <p>${esc(e.closing)}</p>
+    </div>
+    <div>${writingBox("email", true)}</div>
+  </div>
+  <div class="row"><span></span><button id="next">${S.timeUp === "email" ? "Continue" : "Next"}</button></div>`;
+  wireBox("email");
+}
+function discussionTask() {
+  const task = TASKS[S.task], d = DATA.discussion;
+  layout(true); header(TOTAL_Q);
+  if (!tick && S.timeUp !== "discussion") startTimer(task);
+  const [lead, ...bullets] = d.intro.split(" • ");
+  const last = bullets.length ? bullets[bullets.length - 1].match(/^(.*?\.)\s+(.*)$/) : null;
+  if (last) bullets[bullets.length - 1] = last[1];
+  const post = (p, cls) => `<div class="post ${cls}"><div class="who"><div class="avatar ${cls ? "" : "b"}"></div>${esc(p.name)}</div>${esc(p.text)}</div>`;
+  $("screen").innerHTML = `
+    <div class="prompt">
+      <p>${esc(lead)}</p>
+      ${bullets.length ? `<ul>${bullets.map(b => `<li>${esc(b)}</li>`).join("")}</ul>` : ""}
+      ${last ? `<p>${esc(last[2])}</p>` : ""}
+    </div>
+    <div class="split">
+      <div>${post(d.professor, "prof")}<div class="students">${d.students.map(s => post(s, "")).join("")}</div></div>
+      <div>${writingBox("discussion", false)}</div>
+    </div>
+    <div class="row"><span></span><button id="next">${S.timeUp === "discussion" ? "Continue" : "Finish"}</button></div>`;
+  wireBox("discussion");
+}
+
+// ---------- results ----------
+const mmss = s => { s = Math.round(s || 0); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+function results() {
+  stopTimer(); S.finished = true; save();
+  layout(false); header(0);
+  const score = BAS.filter((_, i) => basCorrect(i)).length;
+  const basRows = BAS.map((it, i) => {
+    const ok = basCorrect(i), yours = joinParts(it.parts, basWords(i)), key = joinParts(it.parts, it.key);
+    return `<tr><td>${i + 1}</td><td class="${ok ? "ok" : "no"}">${ok ? "✓" : "✗"}</td><td>${esc(yours)}${ok ? "" : `<br><span class="muted">Correct: ${esc(key)}</span>`}</td></tr>`;
+  }).join("");
+  const date = (S.started || new Date().toISOString()).slice(0, 10);
+  const lines = [`WRITING TEST: ${DATA.id} (${date})`, ""];
+  if (BAS.length) {
+    lines.push(`Build a Sentence: ${score}/${BAS.length} (time ${mmss(S.used.bas)} of ${mmss(TASKS.find(t => t.key === "bas").minutes * 60)})`);
+    BAS.forEach((it, i) => lines.push(`${i + 1}. ${basCorrect(i) ? "✓" : "✗"} ${joinParts(it.parts, basWords(i))}${basCorrect(i) ? "" : `  | key: ${joinParts(it.parts, it.key)}`}`));
+    lines.push("");
+  }
+  if (DATA.email) lines.push(`Email (${countWords(S.email)} words, time ${mmss(S.used.email)} of ${mmss((DATA.email.minutes || 7) * 60)}):`, S.email.trim() || "(empty)", "");
+  if (DATA.discussion) lines.push(`Academic Discussion (${countWords(S.discussion)} words, time ${mmss(S.used.discussion)} of ${mmss((DATA.discussion.minutes || 10) * 60)}):`, S.discussion.trim() || "(empty)");
+  const code = lines.join("\n");
+  $("screen").innerHTML = `
+    <h2>Result</h2>
+    ${BAS.length ? `<p class="muted">Build a Sentence</p><div class="big">${score}/${BAS.length}</div>
+      <table><tr><th>#</th><th></th><th>Your sentence</th></tr>${basRows}</table>` : ""}
+    ${DATA.email ? `<h2 style="margin-top:24px">Email; ${countWords(S.email)} words; ${mmss(S.used.email)}</h2><pre>${esc(S.email || "(empty)")}</pre>` : ""}
+    ${DATA.discussion ? `<h2 style="margin-top:24px">Academic Discussion; ${countWords(S.discussion)} words; ${mmss(S.used.discussion)}</h2><pre>${esc(S.discussion || "(empty)")}</pre>` : ""}
+    <div class="note">Your coach grades the Email and the Academic Discussion. Copy the block below and send it to your coach.</div>
+    <pre id="code">${esc(code)}</pre>
+    <div class="row"><div class="group"><button class="secondary" id="copy">Copy</button><button class="secondary" id="dl">Download .txt</button></div>
+      <button class="secondary" id="again">Start over</button></div>`;
+  $("copy").onclick = () => navigator.clipboard.writeText(code).then(() => { $("copy").textContent = "Copied"; });
+  $("dl").onclick = () => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([code], { type: "text/plain" }));
+    a.download = `${DATA.id}-${date}.txt`; a.click();
+  };
+  $("again").onclick = () => { if (confirm("Delete your answers and start over?")) { clearSaved(); S = fresh(); render(); } };
+}
+
+// ---------- start ----------
+const saved = load();
+if (saved && saved.step !== "intro") {
+  S = Object.assign(fresh(), saved);
+  if (S.finished) render();
+  else {
+    layout(false); header(0);
+    $("screen").innerHTML = `<h2>Resume</h2><p>You have already started this test${S.started ? ` (${S.started.slice(0, 10)})` : ""}. The timer continues where it stopped.</p>
+      <div class="row"><button class="secondary" id="restart">Start over</button><button id="resume">Continue</button></div>`;
+    $("resume").onclick = render;
+    $("restart").onclick = () => { if (confirm("Delete your saved answers?")) { clearSaved(); S = fresh(); render(); } };
+  }
+} else render();
+</script>
+</body>
+</html>

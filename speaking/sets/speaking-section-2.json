@@ -1,0 +1,30 @@
+{
+  "id": "speaking-section-2",
+  "title": "Speaking section, practice 2",
+  "narrator": "am_michael",
+  "listen_repeat": {
+    "intro": "You are training to work at the welcome desk during orientation week. Listen to the coordinator and repeat what she says. Repeat only once.",
+    "voice": "af_sarah",
+    "sentences": [
+      {"spot": "Welcome Desk", "text": "Orientation week starts on Monday morning."},
+      {"spot": "Bookstore", "text": "You can buy textbooks at the campus bookstore."},
+      {"spot": "Bus Stop", "text": "Buses to the city center leave every fifteen minutes."},
+      {"spot": "Gym", "text": "Make sure you sign up for a gym membership online."},
+      {"spot": "Health Center", "text": "The health center is closed on weekends, except for medical emergencies."},
+      {"spot": "Lecture Hall", "text": "Please turn off your phones before you enter the main lecture hall."},
+      {"spot": "Career Office", "text": "The career office, located next to the library, helps first-year students find part-time jobs."}
+    ]
+  },
+  "interview": {
+    "topic": "money",
+    "intro": "You have agreed to take part in a research study about how young adults manage their money. You will have a short online interview with a researcher. The researcher will ask you some questions.",
+    "voice": "af_heart",
+    "questions": [
+      "Thank you for speaking with me today. To begin, I'd like you to think about the last time you bought something expensive, something you had to save up for. What did you buy? Why did you decide to buy it?",
+      "Great. People handle money in very different ways. Some people carefully plan every purchase, while others prefer to spend more spontaneously. Which describes you better? Why do you think that is?",
+      "OK. Next, I'd like to ask your opinion. Some people believe that high schools should teach a required course on personal finance, for example, how to make a budget and save money. Do you agree that this kind of course should be required? Why or why not?",
+      "Good points. Let me ask you one final question. For some time now, researchers have been interested in how paying by card or phone affects how much people spend. Some stores have stopped accepting cash completely. Do you think stores should be allowed to refuse cash? Why or why not?"
+    ]
+  },
+  "outro": "This is the end of the Speaking section."
+}

@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  :root {
+    --bg: #eef1f5; --card: #ffffff; --ink: #22344a; --muted: #6b7787; --line: #d5dbe3;
+    --accent: #2563eb; --accent-soft: #e8efff; --good: #15803d; --bad: #b42318; --header: #22344a; --mark: #fff59d;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.55 -apple-system, "Segoe UI", Arial, sans-serif; }
+  header { background: var(--header); color: #fff; display: flex; justify-content: space-between; align-items: center;
+           padding: 12px 24px; font-weight: 600; gap: 12px; flex-wrap: wrap; position: sticky; top: 0; z-index: 5; }
+  header .right { font-weight: 400; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  #hTime { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 76px; text-align: right; }
+  #hTime.low { color: #fdba74; }
+  header button { padding: 5px 12px; font-size: 14px; background: #3a4f69; }
+  main { max-width: 1180px; margin: 24px auto; padding: 0 16px; }
+  main.narrow { max-width: 760px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 26px; }
+  h1 { font-size: 26px; margin: 0 0 12px; }
+  h2 { font-size: 20px; margin: 0 0 14px; }
+  .muted { color: var(--muted); font-size: 15px; }
+  button { font: inherit; border-radius: 10px; border: 0; padding: 10px 20px; cursor: pointer; background: var(--accent); color: #fff; }
+  button:disabled { background: #a3adba; cursor: default; }
+  button.secondary { background: var(--accent-soft); color: var(--accent); }
+  .row { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; gap: 12px; flex-wrap: wrap; }
+  .row .group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .note { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 12px 14px; font-size: 15px; margin-top: 14px; }
+  .timeup { background: #fef2f2; border: 1px solid #fecaca; color: var(--bad); border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; font-weight: 600; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 6px; text-align: left; vertical-align: top; }
+  .ok { color: var(--good); font-weight: 700; } .no { color: var(--bad); font-weight: 700; }
+  .big { font-size: 44px; font-weight: 800; margin: 4px 0; }
+  pre { white-space: pre-wrap; background: #f6f8fb; border: 1px solid var(--line); border-radius: 8px; padding: 12px; font-size: 14px; }
+  footer { text-align: center; color: #a3adba; font-size: 13px; margin: 28px 0; }
+
+  .split { display: grid; grid-template-columns: 1.15fr 1fr; gap: 26px; }
+  @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+  .passage { border-right: 1px solid var(--line); padding-right: 24px; max-height: 70vh; overflow: auto; }
+  @media (max-width: 860px) { .passage { border-right: 0; padding-right: 0; max-height: none; } }
+  .passage h3 { text-align: center; margin: 0 0 12px; font-size: 18px; }
+  .passage p { margin: 0 0 12px; }
+  mark { background: var(--mark); padding: 0 2px; font-weight: 700; }
+  .ins { display: inline-block; min-width: 26px; text-align: center; font-weight: 700; color: var(--accent); background: var(--accent-soft);
+         border: 1px solid var(--accent); border-radius: 4px; padding: 0 4px; cursor: pointer; font-size: 14px; }
+  .ins.chosen { background: var(--accent); color: #fff; }
+  .inserted { font-weight: 700; background: #eaf7ee; }
+  .doc { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .doc .head { background: #f3f6fb; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .doc .body { padding: 14px; }
+  .doc .body p { margin: 0 0 10px; }
+  .tag { color: var(--accent); }
+  .who { display: flex; gap: 10px; align-items: center; font-weight: 700; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: #d8e3f7; position: relative; overflow: hidden; flex: none; }
+  .avatar::before { content: ""; position: absolute; width: 14px; height: 14px; border-radius: 50%; background: #7f9bd1; left: 11px; top: 7px; }
+  .avatar::after { content: ""; position: absolute; width: 30px; height: 26px; border-radius: 50%; background: #7f9bd1; left: 3px; top: 23px; }
+  .label { font-weight: 700; margin-bottom: 10px; }
+  .stem { font-weight: 700; margin-bottom: 14px; }
+  .insert-box { border-left: 4px solid var(--accent); background: #f6f8fb; padding: 8px 12px; margin: 10px 0 14px; font-weight: 700; }
+  .opt { display: flex; gap: 10px; align-items: flex-start; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin: 8px 0; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt.sel { border-color: var(--accent); background: var(--accent-soft); }
+  .opt .dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #8a9ab0; flex: none; margin-top: 3px; }
+  .opt.sel .dot { border-color: var(--accent); background: radial-gradient(var(--accent) 45%, transparent 50%); }
+  .ctw { line-height: 2.3; }
+  .word { white-space: nowrap; }
+  .lt { width: 1.35em; height: 1.6em; font: inherit; text-align: center; border: 0; border-bottom: 2px solid #8a9ab0; background: #f6f8fb;
+        margin: 0 1px; padding: 0; color: var(--ink); border-radius: 3px 3px 0 0; }
+  .lt:focus { outline: 2px solid var(--accent-soft); border-bottom-color: var(--accent); background: #fff; }
+  .lt[readonly] { background: #eef1f5; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
+  .grid button { background: #f6f8fb; color: var(--ink); border: 1px solid var(--line); padding: 8px 0; }
+  .grid button.done { border-color: var(--accent); background: var(--accent-soft); }
+</style>
+</head>
+<body>
+<header>
+  <div id="hLeft">Reading</div>
+  <div class="right"><span id="hQ"></span><button id="hReview" hidden>Review</button><span id="hTime"></span><button id="hToggle" hidden>Hide Time</button></div>
+</header>
+<main class="narrow" id="main"><div class="card" id="screen"></div></main>
+<footer>Practice simulation. Not an official ETS product.</footer>
+
+<script id="test-data" type="application/octet-stream">__DATA__</script>
+<script>
+const DATA = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(document.getElementById("test-data").textContent.trim()), c => c.charCodeAt(0))));
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const STORE = "toefl-reading-test:" + DATA.id;
+const L = ["A", "B", "C", "D"];
+
+// ---------- items and pages ----------
+// every item: {mi, id, n, kind: "ctw"|"mc", task, ...}; every page: {mi, task, items: [ids]}
+const MODS = DATA.modules.map((mod, mi) => {
+  const items = [], pages = [];
+  mod.tasks.forEach((task, ti) => {
+    if (task.type === "ctw") {
+      const words = [...task.text.matchAll(/\{\{(\w*)\|(\w*)\}\}/g)];
+      const ids = words.map((w, k) => {
+        const it = { mi, ti, id: `${mi}-${task.first + k}`, n: task.first + k, kind: "ctw", given: w[1], missing: w[2],
+                     scored: task.scored ? task.scored[k] !== false : true, qtype: "Complete the Words", group: "Complete the Words" };
+        items.push(it); return it.id;
+      });
+      pages.push({ mi, ti, items: ids });
+    } else {
+      task.questions.forEach((q, qi) => {
+        const it = { mi, ti, qi, id: `${mi}-${q.n}`, n: q.n, kind: "mc", q, key: q.key, scored: q.scored !== false,
+                     qtype: q.qtype || "", group: task.type === "daily" ? "Read in Daily Life" : "Read an Academic Passage" };
+        items.push(it); pages.push({ mi, ti, items: [it.id] });
+      });
+    }
+  });
+  return { name: mod.name, minutes: mod.minutes, items, pages };
+});
+const ITEM = {}; MODS.forEach(m => m.items.forEach(it => ITEM[it.id] = it));
+
+// ---------- state ----------
+function fresh() { return { step: "intro", mi: 0, page: 0, ans: {}, left: {}, used: {}, hideTime: false, started: null, finished: false }; }
+let S = fresh();
+function load() { try { const v = JSON.parse(localStorage.getItem(STORE)); if (v && v.ans) return v; } catch (e) {} return null; }
+function save() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) {} }
+function clearSaved() { try { localStorage.removeItem(STORE); } catch (e) {} }
+
+// ---------- timer ----------
+let deadline = null, tick = null;
+const fmt = s => { s = Math.max(0, Math.ceil(s)); return `${String(Math.floor(s / 3600)).padStart(2, "0")}:${String(Math.floor(s / 60) % 60).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`; };
+const mmss = s => { s = Math.round(s || 0); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+function startTimer(mi) {
+  const total = MODS[mi].minutes * 60;
+  if (S.left[mi] === undefined) S.left[mi] = total;
+  deadline = Date.now() + S.left[mi] * 1000;
+  $("hToggle").hidden = false;
+  clearInterval(tick);
+  const update = () => {
+    const left = (deadline - Date.now()) / 1000;
+    S.left[mi] = Math.max(0, left);
+    S.used[mi] = total - S.left[mi];
+    $("hTime").textContent = S.hideTime ? "" : fmt(left);
+    $("hTime").classList.toggle("low", left <= 60);
+    save();
+    if (left <= 0) { stopTimer(); go("timeup"); }
+  };
+  update();
+  tick = setInterval(update, 250);
+}
+function stopTimer() { clearInterval(tick); tick = null; deadline = null; }
+$("hToggle").onclick = () => { S.hideTime = !S.hideTime; $("hToggle").textContent = S.hideTime ? "Show Time" : "Hide Time"; save(); };
+$("hReview").onclick = () => go("review");
+window.addEventListener("beforeunload", e => { if (tick) { e.preventDefault(); e.returnValue = ""; } });
+
+function header(text, review) {
+  $("hLeft").textContent = S.step === "intro" || S.step === "results" ? "Reading" : `Reading · ${MODS[S.mi].name}`;
+  $("hQ").textContent = text || "";
+  $("hReview").hidden = !review;
+  if (!tick) { $("hTime").textContent = ""; $("hToggle").hidden = true; }
+  $("hToggle").textContent = S.hideTime ? "Show Time" : "Hide Time";
+}
+function layout(wide) { $("main").className = wide ? "" : "narrow"; window.scrollTo(0, 0); }
+
+// ---------- flow ----------
+function go(step) { S.step = step; save(); render(); }
+function render() {
+  if (S.step === "intro") return intro();
+  if (S.step === "directions") return directions();
+  if (S.step === "page") return page();
+  if (S.step === "review") return review();
+  if (S.step === "timeup") return timeup();
+  if (S.step === "results") return results();
+}
+function ensureTimer() { if (!tick && !S.finished) startTimer(S.mi); }
+
+function intro() {
+  layout(false); header();
+  const rows = MODS.map(m => `<tr><td>${esc(m.name)}</td><td>${m.items.length}</td><td>${m.minutes} min</td></tr>`).join("");
+  $("screen").innerHTML = `
+    <h1>${esc(DATA.title)}</h1>
+    ${DATA.source ? `<p class="muted">${esc(DATA.source)}</p>` : ""}
+    <table><tr><th>Module</th><th>Questions</th><th>Time</th></tr>${rows}</table>
+    <div class="note">
+      Each module has its own timer, which starts when you click Continue. Inside a module you can go back and change answers (Back, Review)
+      while time remains, as in ETS's Practice Test. When time runs out or you finish a module, its answers are locked.
+      On the real test, Reading is adaptive; this test is linear.${MODS.some(m => m.items.some(it => !it.scored)) ? " Some questions are unscored, as on the real test; you see which ones only at the end." : ""}
+      Answers are saved in the browser, so a reload loses nothing.
+    </div>
+    <div class="row"><span></span><button id="begin">Begin</button></div>`;
+  $("begin").onclick = () => { S.started = new Date().toISOString(); S.mi = 0; go("directions"); };
+}
+
+function directions() {
+  layout(false); header();
+  const m = MODS[S.mi];
+  $("screen").innerHTML = `<h2>${esc(m.name)}</h2>
+    <p>In this module, you will answer ${m.items.length} questions. You have about ${m.minutes} minutes.
+    You may review and change your answers in this module as long as time remains.</p>
+    <div class="row"><span class="muted">The timer starts when you click Continue.</span><button id="cont">Continue</button></div>`;
+  $("cont").onclick = () => { S.page = 0; startTimer(S.mi); go("page"); };
+}
+
+// ---------- rendering texts ----------
+function inline(s, opts) {
+  // ==word== is highlighted only while its vocabulary question is shown; [A]-[D] are shown only for Insert Text questions
+  let h = esc(s).replace(/==(.+?)==/g, (_, w) => opts.mark && w.replace(/[“”"]/g, "") === opts.mark ? `<mark>${w}</mark>` : w);
+  h = h.replace(/\s?\[([A-D])\]/g, (_, l) => {
+    if (!opts.insert) return "";
+    const chosen = opts.chosen === l;
+    return ` <span class="ins${chosen ? " chosen" : ""}" data-l="${l}">${chosen ? "■" : l}</span>${chosen ? ` <span class="inserted">${esc(opts.insert)}</span>` : ""}`;
+  });
+  return h;
+}
+function passageHtml(task, opts) {
+  if (task.type === "academic") {
+    return `<h3>${esc(task.title)}</h3>` + task.paragraphs.map(p => `<p>${inline(p, opts)}</p>`).join("");
+  }
+  const kind = task.label.replace(/^Read (an?|the) /i, "").replace(/\.$/, "");
+  const ps = task.paragraphs.slice();
+  let head = "";
+  if (/email/i.test(kind)) {
+    const subj = ps[0] && ps[0].startsWith("Subject:") ? ps.shift() : "";
+    head = `<div class="head">${subj ? `<b>Subject:</b> ${esc(subj.slice(8).trim())}` : "Email"}</div>`;
+  } else if (/social media/i.test(kind)) {
+    head = `<div class="head who"><span class="avatar"></span>${esc(ps.shift())}</div>`;
+  } else {
+    head = `<div class="head"><b>${esc(kind[0].toUpperCase() + kind.slice(1))}</b></div>`;
+  }
+  const body = ps.map(p => `<p>${p.startsWith("#") ? `<span class="tag">${esc(p)}</span>` : inline(p, opts)}</p>`).join("");
+  return `<div class="label">${esc(task.label)}</div><div class="doc">${head}<div class="body">${body}</div></div>`;
+}
+function ctwHtml(task, mi, locked) {
+  let k = 0;
+  return esc(task.text).replace(/\{\{(\w*)\|(\w*)\}\}/g, (_, given, missing) => {
+    const id = `${mi}-${task.first + k}`; k += 1;
+    const typed = (S.ans[id] || "").padEnd(missing.length, " ");
+    const boxes = [...missing].map((_, j) =>
+      `<input class="lt" data-id="${id}" data-j="${j}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" ${locked ? "readonly" : ""} value="${esc(typed[j].trim())}">`).join("");
+    return `<span class="word">${given}${boxes}</span>`;
+  });
+}
+
+// ---------- a page of items ----------
+const modLocked = mi => !!(S.done && S.done[mi]);
+function page() {
+  const m = MODS[S.mi], pg = m.pages[S.page], task = DATA.modules[S.mi].tasks[pg.ti];
+  const locked = modLocked(S.mi);
+  if (!locked) ensureTimer();
+  const its = pg.items.map(id => ITEM[id]);
+  const qText = its.length > 1 ? `Questions ${its[0].n}–${its[its.length - 1].n} of ${m.items.length}` : `Question ${its[0].n} of ${m.items.length}`;
+  header(qText, !locked);
+  const nav = `<div class="row"><button class="secondary" id="back" ${S.page === 0 ? "disabled" : ""}>Back</button>
+    <button id="next">${S.page === m.pages.length - 1 ? "Review" : "Next"}</button></div>`;
+  if (task.type === "ctw") {
+    layout(false);
+    $("screen").innerHTML = `<div class="label">Fill in the missing letters in the paragraph.</div><div class="ctw">${ctwHtml(task, S.mi, locked)}</div>${nav}`;
+    const boxes = [...document.querySelectorAll(".lt")];
+    const store = id => { S.ans[id] = boxes.filter(b => b.dataset.id === id).map(b => b.value || " ").join("").replace(/\s+$/, ""); save(); };
+    boxes.forEach((b, i) => {
+      b.addEventListener("input", () => {
+        // several letters at once (paste, fast typing, autofill): spread them over this box and the next ones
+        const chars = [...b.value.replace(/\s/g, "")];
+        if (!chars.length) { b.value = ""; store(b.dataset.id); return; }
+        let k = i;
+        chars.forEach(ch => { if (boxes[k]) { boxes[k].value = ch; store(boxes[k].dataset.id); k += 1; } });
+        (boxes[k] || boxes[k - 1]).focus();
+      });
+      b.addEventListener("focus", () => b.select());
+      b.addEventListener("keydown", e => {
+        if (e.key === "Backspace" && !b.value && boxes[i - 1]) { e.preventDefault(); boxes[i - 1].value = ""; store(boxes[i - 1].dataset.id); boxes[i - 1].focus(); }
+        if (e.key === "ArrowLeft" && boxes[i - 1]) boxes[i - 1].focus();
+        if (e.key === "ArrowRight" && boxes[i + 1]) boxes[i + 1].focus();
+      });
+    });
+    if (!locked && boxes[0]) { const first = boxes.find(b => !b.value) || boxes[0]; first.focus({ preventScroll: true }); }
+  } else {
+    layout(true);
+    const it = its[0], q = it.q, chosen = S.ans[it.id];
+    const markWord = (q.stem.match(/==“?(.+?)”?==/) || [])[1];
+    const opts = { mark: markWord ? markWord.replace(/[“”"]/g, "") : null, insert: q.insert || null, chosen: q.insert ? chosen : null };
+    const stem = esc(q.stem).replace(/==(.+?)==/g, "<mark>$1</mark>");
+    const insertTxt = q.insert ? `<div class="insert-box">${esc(q.insert)}</div><div class="stem">Where would the sentence best fit?</div>` : "";
+    $("screen").innerHTML = `<div class="split">
+      <div class="passage">${passageHtml(task, opts)}</div>
+      <div><div class="stem">${stem}</div>${insertTxt}
+        ${q.options.map((o, k) => `<button class="opt${chosen === L[k] ? " sel" : ""}" data-l="${L[k]}" ${locked ? "disabled" : ""}><span class="dot"></span><span>${esc(o)}</span></button>`).join("")}
+      </div></div>${nav}`;
+    const pick = l => { if (locked) return; S.ans[it.id] = l; save(); page(); };
+    document.querySelectorAll(".opt").forEach(b => b.onclick = () => pick(b.dataset.l));
+    document.querySelectorAll(".ins").forEach(b => b.onclick = () => pick(b.dataset.l));
+  }
+  $("back").onclick = () => { S.page -= 1; go("page"); };
+  $("next").onclick = () => { if (S.page === m.pages.length - 1) go("review"); else { S.page += 1; go("page"); } };
+}
+
+function answered(it) { const a = S.ans[it.id]; return it.kind === "ctw" ? !!a && a.replace(/\s/g, "").length === it.missing.length : !!a; }
+
+function review() {
+  layout(false);
+  const m = MODS[S.mi], locked = modLocked(S.mi);
+  if (!locked) ensureTimer();
+  header("Review", false);
+  const open = m.items.filter(it => !answered(it)).length;
+  $("screen").innerHTML = `<h2>Review · ${esc(m.name)}</h2>
+    <p class="muted">Blue = answered. Click a number to go back to that question.</p>
+    <div class="grid">${m.items.map(it => `<button class="${answered(it) ? "done" : ""}" data-id="${it.id}">${it.n}</button>`).join("")}</div>
+    ${open ? `<div class="note">Unanswered: ${open}.</div>` : ""}
+    <div class="row"><button class="secondary" id="ret">Return</button>
+      <button id="finish">${S.mi < MODS.length - 1 ? "Finish module" : "Finish section"}</button></div>`;
+  document.querySelectorAll(".grid button").forEach(b => b.onclick = () => {
+    S.page = m.pages.findIndex(p => p.items.includes(b.dataset.id)); go("page");
+  });
+  $("ret").onclick = () => go("page");
+  $("finish").onclick = () => {
+    if (!confirm(open ? `${open} questions have no answer. Finish the module? There is no going back.` : "Finish the module? There is no going back.")) return;
+    endModule();
+  };
+}
+function endModule() {
+  stopTimer();
+  S.done = Object.assign({}, S.done, { [S.mi]: true });
+  if (S.mi < MODS.length - 1) { S.mi += 1; S.page = 0; go("directions"); }
+  else { S.finished = true; go("results"); }
+}
+function timeup() {
+  layout(false); header();
+  S.done = Object.assign({}, S.done, { [S.mi]: true }); save();
+  $("screen").innerHTML = `<div class="timeup">Time for ${esc(MODS[S.mi].name)} is up.</div>
+    <p>The answers in this module are locked.</p>
+    <div class="row"><span></span><button id="cont">Continue</button></div>`;
+  $("cont").onclick = () => { if (S.mi < MODS.length - 1) { S.mi += 1; S.page = 0; go("directions"); } else { S.finished = true; go("results"); } };
+}
+
+// ---------- results ----------
+function correct(it) {
+  const a = S.ans[it.id] || "";
+  return it.kind === "ctw" ? a.replace(/\s/g, "").toLowerCase() === it.missing.toLowerCase() : a === it.key;
+}
+function shown(it) {
+  if (it.kind === "ctw") return it.given + (S.ans[it.id] || "").replace(/ /g, "_");
+  return S.ans[it.id] || "–";
+}
+function results() {
+  layout(false); header();
+  const all = MODS.flatMap(m => m.items);
+  const scored = all.filter(it => it.scored);
+  const raw = scored.filter(correct).length;
+  const conv = (DATA.conversion || []).find(r => r[0] === raw);
+  const date = (S.started || new Date().toISOString()).slice(0, 10);
+  const byGroup = {}, byType = {};
+  scored.forEach(it => {
+    for (const [obj, k] of [[byGroup, it.group], [byType, it.qtype]]) {
+      obj[k] = obj[k] || [0, 0]; obj[k][1] += 1; if (correct(it)) obj[k][0] += 1;
+    }
+  });
+  const lines = [`READING TEST: ${DATA.id} (${date})`, ""];
+  lines.push(`Scored: ${raw}/${scored.length}${conv ? ` → band ${conv[1]} (${conv[2]}) ${DATA.conversion_note || "from the test's conversion table"}` : ""}`);
+  lines.push(`All questions (including unscored): ${all.filter(correct).length}/${all.length}`);
+  lines.push("By task (scored): " + Object.entries(byGroup).map(([k, v]) => `${k} ${v[0]}/${v[1]}`).join(", "));
+  lines.push("By question type (scored): " + Object.entries(byType).filter(([k]) => k !== "Complete the Words").map(([k, v]) => `${k} ${v[0]}/${v[1]}`).join(", "));
+  MODS.forEach((m, mi) => {
+    const sc = m.items.filter(it => it.scored);
+    lines.push("", `${m.name}: ${sc.filter(correct).length}/${sc.length} scored, ${m.items.filter(correct).length}/${m.items.length} in all, time ${mmss(S.used[mi])} of ${mmss(m.minutes * 60)}`);
+    m.items.forEach(it => {
+      const ok = correct(it);
+      const key = it.kind === "ctw" ? it.given + it.missing : it.key;
+      lines.push(`${it.n}. ${ok ? "✓" : "✗"} ${shown(it)}${ok ? "" : `  | key: ${key}`}${it.kind === "mc" ? `  (${it.qtype})` : ""}${it.scored ? "" : "  [unscored]"}`);
+    });
+  });
+  const code = lines.join("\n");
+  const rows = MODS.map((m, mi) => m.items.map(it => {
+    const ok = correct(it);
+    return `<tr><td>${mi + 1}.${it.n}</td><td class="${ok ? "ok" : "no"}">${ok ? "✓" : "✗"}</td><td>${esc(shown(it))}${ok ? "" : ` <span class="muted">→ ${esc(it.kind === "ctw" ? it.given + it.missing : it.key)}</span>`}</td><td class="muted">${esc(it.kind === "ctw" ? "Complete the Words" : it.qtype)}${it.scored ? "" : " · nebodovano"}</td></tr>`;
+  }).join("")).join("");
+  $("screen").innerHTML = `
+    <h2>Result</h2>
+    <p class="muted">Scored questions</p><div class="big">${raw}/${scored.length}</div>
+    ${conv ? `<p>Band <b>${conv[1]}</b> (${conv[2]}) ${esc(DATA.conversion_note || "from the test's conversion table")}. This is an estimate, not an official score.</p>` : ""}
+    <table><tr><th>#</th><th></th><th>Your answer</th><th>Type</th></tr>${rows}</table>
+    <div class="note">Copy the block below and send it to your coach.</div>
+    <pre id="code">${esc(code)}</pre>
+    <div class="row"><div class="group"><button class="secondary" id="copy">Copy</button><button class="secondary" id="dl">Download .txt</button></div>
+      <button class="secondary" id="again">Start over</button></div>`;
+  $("copy").onclick = () => navigator.clipboard.writeText(code).then(() => { $("copy").textContent = "Copied"; });
+  $("dl").onclick = () => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([code], { type: "text/plain" }));
+    a.download = `${DATA.id}-${date}.txt`; a.click();
+  };
+  $("again").onclick = () => { if (confirm("Delete your answers and start over?")) { clearSaved(); S = fresh(); render(); } };
+}
+
+// ---------- start ----------
+const saved = load();
+if (saved && saved.step !== "intro") {
+  S = Object.assign(fresh(), saved);
+  if (S.finished) render();
+  else {
+    layout(false); header();
+    $("screen").innerHTML = `<h2>Resume</h2><p>You have already started this test${S.started ? ` (${S.started.slice(0, 10)})` : ""}. The timer continues where it stopped.</p>
+      <div class="row"><button class="secondary" id="restart">Start over</button><button id="resume">Continue</button></div>`;
+    $("resume").onclick = render;
+    $("restart").onclick = () => { if (confirm("Delete your saved answers?")) { clearSaved(); S = fresh(); render(); } };
+  }
+} else render();
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" font-family="Inter, -apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+<rect width="760" height="400" rx="12" fill="#fcfcfb"/>
+<text x="56" y="32" font-size="17" font-weight="600" fill="#0b0b0b">ETS rated responses graded inside ETS's own score range (of 19)</text>
+<text x="56" y="54" font-size="13" fill="#52514e">Blind graders, same 19 items, three Claude models. Calibrated rules: mean of 2 runs.</text>
+<rect x="56" y="68" width="12" height="12" rx="3" fill="#e34948"/><text x="74" y="78.5" font-size="12.5" fill="#52514e">Pre-calibration rules</text>
+<rect x="240.9" y="68" width="12" height="12" rx="3" fill="#2a78d6"/><text x="258.9" y="78.5" font-size="12.5" fill="#52514e">Calibrated rules</text>
+<rect x="391.3" y="68" width="12" height="12" rx="3" fill="#1baf7a"/><text x="409.3" y="78.5" font-size="12.5" fill="#52514e">Calibrated, sample notes removed</text>
+<line x1="56" x2="736" y1="344.0" y2="344.0" stroke="#e6e5e1" stroke-width="1"/><text x="46" y="348.0" font-size="11.5" fill="#52514e" text-anchor="end">0</text>
+<line x1="56" x2="736" y1="281.0" y2="281.0" stroke="#e6e5e1" stroke-width="1"/><text x="46" y="285.0" font-size="11.5" fill="#52514e" text-anchor="end">5</text>
+<line x1="56" x2="736" y1="218.0" y2="218.0" stroke="#e6e5e1" stroke-width="1"/><text x="46" y="222.0" font-size="11.5" fill="#52514e" text-anchor="end">10</text>
+<line x1="56" x2="736" y1="155.0" y2="155.0" stroke="#e6e5e1" stroke-width="1"/><text x="46" y="159.0" font-size="11.5" fill="#52514e" text-anchor="end">15</text>
+<line x1="56" x2="736" y1="104.60000000000002" y2="104.60000000000002" stroke="#52514e" stroke-width="1" stroke-dasharray="4 4"/><text x="736" y="98.60000000000002" font-size="11.5" fill="#52514e" text-anchor="end">all 19</text>
+<path d="M98.33333333333331,344.0 V171.60000000000002 Q98.33333333333331,167.60000000000002 102.33333333333331,167.60000000000002 H140.33333333333331 Q144.33333333333331,167.60000000000002 144.33333333333331,171.60000000000002 V344.0 Z" fill="#e34948"><title>Opus, Pre-calibration rules: 14 of 19</title></path>
+<text x="121.33333333333331" y="161.60000000000002" font-size="12.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">14</text>
+<path d="M146.33333333333331,344.0 V108.60000000000002 Q146.33333333333331,104.60000000000002 150.33333333333331,104.60000000000002 H188.33333333333331 Q192.33333333333331,104.60000000000002 192.33333333333331,108.60000000000002 V344.0 Z" fill="#2a78d6"><title>Opus, Calibrated rules: 19 of 19</title></path>
+<text x="169.33333333333331" y="98.60000000000002" font-size="12.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">19</text>
+<path d="M194.33333333333331,344.0 V133.8 Q194.33333333333331,129.8 198.33333333333331,129.8 H236.33333333333331 Q240.33333333333331,129.8 240.33333333333331,133.8 V344.0 Z" fill="#1baf7a"><title>Opus, Calibrated, sample notes removed: 17 of 19</title></path>
+<text x="217.33333333333331" y="123.80000000000001" font-size="12.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">17</text>
+<text x="169.33333333333331" y="366" font-size="13.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">Opus</text>
+<path d="M324.99999999999994,344.0 V171.60000000000002 Q324.99999999999994,167.60000000000002 328.99999999999994,167.60000000000002 H366.99999999999994 Q370.99999999999994,167.60000000000002 370.99999999999994,171.60000000000002 V344.0 Z" fill="#e34948"><title>Sonnet, Pre-calibration rules: 14 of 19</title></path>
+<text x="347.99999999999994" y="161.60000000000002" font-size="12.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">14</text>
+<path d="M372.99999999999994,344.0 V114.89999999999998 Q372.99999999999994,110.89999999999998 376.99999999999994,110.89999999999998 H414.99999999999994 Q418.99999999999994,110.89999999999998 418.99999999999994,114.89999999999998 V344.0 Z" fill="#2a78d6"><title>Sonnet, Calibrated rules: 18.5 of 19</title></path>
+<text x="395.99999999999994" y="104.89999999999998" font-size="12.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">18.5</text>
+<path d="M420.99999999999994,344.0 V159.0 Q420.99999999999994,155.0 424.99999999999994,155.0 H462.99999999999994 Q466.99999999999994,155.0 466.99999999999994,159.0 V344.0 Z" fill="#1baf7a"><title>Sonnet, Calibrated, sample notes removed: 15 of 19</title></path>
+<text x="443.99999999999994" y="149.0" font-size="12.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">15</text>
+<text x="395.99999999999994" y="366" font-size="13.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">Sonnet</text>
+<path d="M551.6666666666666,344.0 V272.4 Q551.6666666666666,268.4 555.6666666666666,268.4 H593.6666666666666 Q597.6666666666666,268.4 597.6666666666666,272.4 V344.0 Z" fill="#e34948"><title>Haiku, Pre-calibration rules: 6 of 19</title></path>
+<text x="574.6666666666666" y="262.4" font-size="12.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">6</text>
+<path d="M599.6666666666666,344.0 V133.8 Q599.6666666666666,129.8 603.6666666666666,129.8 H641.6666666666666 Q645.6666666666666,129.8 645.6666666666666,133.8 V344.0 Z" fill="#2a78d6"><title>Haiku, Calibrated rules: 17 of 19</title></path>
+<text x="622.6666666666666" y="123.80000000000001" font-size="12.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">17</text>
+<path d="M647.6666666666666,344.0 V171.60000000000002 Q647.6666666666666,167.60000000000002 651.6666666666666,167.60000000000002 H689.6666666666666 Q693.6666666666666,167.60000000000002 693.6666666666666,171.60000000000002 V344.0 Z" fill="#1baf7a"><title>Haiku, Calibrated, sample notes removed: 14 of 19</title></path>
+<text x="670.6666666666666" y="161.60000000000002" font-size="12.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">14</text>
+<text x="622.6666666666666" y="366" font-size="13.5" font-weight="600" fill="#0b0b0b" text-anchor="middle">Haiku</text>
+<line x1="56" x2="736" y1="344.0" y2="344.0" stroke="#52514e" stroke-width="1"/>
+</svg>

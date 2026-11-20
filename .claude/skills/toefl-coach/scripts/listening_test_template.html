@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  :root {
+    --bg: #eef1f5; --card: #ffffff; --ink: #22344a; --muted: #6b7787; --line: #d5dbe3;
+    --accent: #2563eb; --accent-soft: #e8efff; --good: #15803d; --bad: #b42318; --header: #22344a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.5 -apple-system, "Segoe UI", Arial, sans-serif; }
+  header { background: var(--header); color: #fff; display: flex; justify-content: space-between; align-items: center;
+           padding: 14px 24px; font-weight: 600; gap: 12px; flex-wrap: wrap; }
+  header .right { font-weight: 400; display: flex; gap: 18px; }
+  main { max-width: 760px; margin: 32px auto; padding: 0 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 32px; }
+  h1 { font-size: 26px; margin: 0 0 12px; }
+  h2 { font-size: 20px; margin: 0 0 16px; }
+  p, li { color: var(--ink); }
+  .muted { color: var(--muted); font-size: 15px; }
+  button { font: inherit; border-radius: 10px; border: 0; padding: 12px 22px; cursor: pointer; background: var(--accent); color: #fff; }
+  button:disabled { background: #a3adba; cursor: default; }
+  button.secondary { background: var(--accent-soft); color: var(--accent); }
+  .row { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; gap: 12px; flex-wrap: wrap; }
+  .speaker { display: flex; align-items: center; gap: 18px; margin: 20px 0; }
+  .avatar { width: 84px; height: 84px; border-radius: 50%; background: #c9d3df; position: relative; overflow: hidden; flex: none; }
+  .avatar::before { content: ""; position: absolute; width: 34px; height: 34px; border-radius: 50%; background: #8a9ab0; left: 25px; top: 16px; }
+  .avatar::after { content: ""; position: absolute; width: 70px; height: 60px; border-radius: 50%; background: #8a9ab0; left: 7px; top: 56px; }
+  .avatar.on { box-shadow: 0 0 0 5px var(--accent); }
+  .bars { display: flex; gap: 5px; align-items: center; height: 30px; }
+  .bars span { width: 7px; background: var(--accent); border-radius: 4px; height: 10px; }
+  .bars.on span { animation: pulse 0.9s ease-in-out infinite; }
+  .bars.on span:nth-child(2) { animation-delay: 0.15s; } .bars.on span:nth-child(3) { animation-delay: 0.3s; }
+  .bars.on span:nth-child(4) { animation-delay: 0.45s; } .bars.on span:nth-child(5) { animation-delay: 0.6s; }
+  @keyframes pulse { 0%, 100% { height: 8px; } 50% { height: 28px; } }
+  .progress { height: 8px; background: #e3e8ef; border-radius: 6px; overflow: hidden; margin-top: 8px; }
+  .progress div { height: 100%; width: 0; background: var(--accent); transition: width 0.25s linear; }
+  .options label { display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--line); border-radius: 10px;
+                   padding: 12px 14px; margin: 10px 0; cursor: pointer; }
+  .options label:hover { background: #f6f8fb; }
+  .options input { margin-top: 5px; }
+  .options .letter { font-weight: 700; min-width: 18px; }
+  .stem { font-weight: 600; font-size: 18px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 7px 6px; text-align: left; vertical-align: top; }
+  .ok { color: var(--good); font-weight: 700; } .no { color: var(--bad); font-weight: 700; }
+  .big { font-size: 44px; font-weight: 800; margin: 4px 0; }
+  details { margin-top: 10px; } summary { cursor: pointer; color: var(--accent); }
+  pre { white-space: pre-wrap; background: #f6f8fb; border: 1px solid var(--line); border-radius: 8px; padding: 12px; font-size: 14px; }
+  .note { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 12px 14px; font-size: 15px; }
+  footer { text-align: center; color: #a3adba; font-size: 13px; margin: 28px 0; }
+</style>
+</head>
+<body>
+<header>
+  <div id="hLeft">Listening</div>
+  <div class="right"><span id="hQ"></span><span id="hTime"></span></div>
+</header>
+<main><div class="card" id="screen"></div></main>
+<footer>Practice simulation. Not an official ETS product.</footer>
+
+<script id="test-data" type="application/octet-stream">__DATA__</script>
+<script>
+const DATA = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(document.getElementById("test-data").textContent.trim()), c => c.charCodeAt(0))));
+// ETS Updated TOEFL iBT Test Overview, Table 3 (Listening column, 0-30 -> 1-6 band). Used as an approximation for raw/30
+// when the test has no conversion table of its own (DATA.conversion: [[raw, band, CEFR], ...], e.g. the Official Guide's).
+const BAND = [[28, 6], [26, 5.5], [22, 5], [20, 4.5], [17, 4], [13, 3.5], [9, 3], [6, 2.5], [4, 2], [2, 1.5], [0, 1]];
+const CEFR = b => b >= 6 ? "C2" : b >= 5 ? "C1" : b >= 4 ? "B2" : b >= 3 ? "B1" : b >= 2 ? "A2" : "A1";
+const TYPE_NAMES = { choose: "Listen and Choose a Response", conversation: "Listen to a Conversation",
+                     announcement: "Listen to an Announcement", talk: "Listen to an Academic Talk" };
+const LETTERS = ["A", "B", "C", "D"];
+const BY_MODULE = DATA.numbering === "module";   // ETS numbering restarts at 1 in each module
+
+// Flatten stages into a sequence of steps: a stage screen, then per block an audio step and its question steps.
+const steps = [];
+let qNum = 0;
+DATA.stages.forEach((stage, si) => {
+  steps.push({ kind: "stage", stage, si });
+  let local = 0;
+  stage.blocks.forEach(block => {
+    steps.push({ kind: "audio", block, stage: si });
+    const qs = block.type === "choose"
+      ? [Object.assign({ stem: "Choose the best response." }, (block.questions || [])[0] || {}, { options: block.options, key: block.key })]
+      : block.questions;
+    qs.forEach((q, i) => {
+      local += 1;
+      steps.push({ kind: "q", block, q, stage: si, n: ++qNum, qi: i, label: BY_MODULE ? `${si + 1}.${local}` : String(qNum), local });
+    });
+  });
+});
+const TOTAL = qNum;
+const stageCount = si => steps.filter(s => s.kind === "q" && s.stage === si).length;
+const answers = {};
+let pos = -1, started = null, finished = false, deadline = null, current = null;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const clock = s => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+
+function tick() {
+  if (!started || finished) return;
+  if (deadline) {
+    const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+    $("hTime").textContent = clock(left);
+    $("hTime").style.color = left <= 60 ? "#fdba74" : "";
+    if (left === 0) timeUp();
+  } else {
+    $("hTime").textContent = clock(Math.floor((Date.now() - started) / 1000));
+  }
+}
+setInterval(tick, 250);
+
+// Module time is up: stop the audio and skip what is left of the module (those items stay unanswered).
+function timeUp() {
+  const cur = steps[pos], si = cur.kind === "stage" ? cur.si : cur.stage;
+  deadline = null;
+  if (current) { current.pause(); current = null; }
+  let k = pos + 1;
+  while (k < steps.length && steps[k].kind !== "stage") k++;
+  pos = k - 1;
+  $("screen").innerHTML = `<h2>Time is up</h2><p>Time for ${esc(DATA.stages[si].name)} is up. Unanswered questions score no points.</p>
+    <div class="row"><span></span><button id="go">Continue</button></div>`;
+  $("go").onclick = next;
+}
+
+function intro() {
+  $("hLeft").textContent = "Listening";
+  const timed = DATA.stages.every(s => s.minutes);
+  $("screen").innerHTML = `
+    <h1>${esc(DATA.title)}</h1>
+    ${DATA.source ? `<p class="muted">${esc(DATA.source)}</p>` : ""}
+    <p>${DATA.ets_audio ? "Official ETS audio" : "Format based on ETS's <i>Updated TOEFL iBT Test Overview</i>"}: four task types,
+      ${TOTAL} questions in ${DATA.stages.length === 2 ? "two modules" : DATA.stages.length + " parts"}${timed ? ` (${DATA.stages.map(s => `${s.name}: ${stageCount(DATA.stages.indexOf(s))} questions, ~${s.minutes} min`).join("; ")})` : ""}.</p>
+    <ul>
+      <li><b>Listen and Choose a Response:</b> you only hear a statement or question (it is not written), then choose the best of 4 written replies.</li>
+      <li><b>Listen to a Conversation:</b> a conversation between two people, then 2 questions.</li>
+      <li><b>Listen to an Announcement:</b> an announcement, then 2 questions.</li>
+      <li><b>Listen to an Academic Talk:</b> a lecture or podcast, then 4 questions.</li>
+    </ul>
+    <div class="note">Each recording plays <b>only once</b>, and you cannot go back to an earlier question. The questions appear when the recording ends.
+      ${timed ? "Each module has its own timer, which starts at <i>Continue</i>; when it runs out, the rest of the module is skipped. " : ""}
+      ${DATA.conversion ? "Some questions are unscored (as on the real test); you see which ones only at the end. " : ""}
+      Notes on paper are allowed. Do not reload the page during the test.</div>
+    <div class="row"><span class="muted">Put on headphones and set the volume before you start.</span>
+      <button id="go">Start the test</button></div>`;
+  $("go").onclick = () => { started = Date.now(); window.onbeforeunload = () => finished ? undefined : "Test is in progress."; next(); };
+}
+
+function next() {
+  pos += 1;
+  if (pos >= steps.length) return results();
+  const st = steps[pos];
+  if (st.kind === "stage") return stageScreen(st);
+  if (st.kind === "audio") return audioScreen(st);
+  return questionScreen(st);
+}
+
+function stageScreen(st) {
+  deadline = null;
+  $("hLeft").textContent = `Listening · ${st.stage.name}`;
+  $("hQ").textContent = "";
+  const count = stageCount(st.si);
+  const text = st.stage.note || (st.stage.minutes
+    ? `${count} questions, about ${st.stage.minutes} minutes. The timer starts when you click <i>Continue</i>.`
+    : st.si === 0
+      ? "The first stage mixes easier and harder items. On the real test, your result here decides which second stage you get."
+      : "The second stage is harder (the upper module), the one a test taker gets after a strong first stage.");
+  $("screen").innerHTML = `<h2>${esc(st.stage.name)}</h2><p>${text}</p>${st.stage.minutes ? "" : `<p class="muted">${count} questions.</p>`}
+    <div class="row"><span></span><button id="go">Continue</button></div>`;
+  $("go").onclick = () => { if (st.stage.minutes) deadline = Date.now() + st.stage.minutes * 60000; next(); };
+}
+
+function qHeader(st) {
+  const total = BY_MODULE ? stageCount(st.stage) : TOTAL;
+  return `Question ${BY_MODULE ? st.local : st.n} of ${total}`;
+}
+
+function audioScreen(st) {
+  const b = st.block;
+  $("hLeft").textContent = `Listening · ${DATA.stages[st.stage].name} · ${TYPE_NAMES[b.type]}`;
+  $("hQ").textContent = qHeader(steps.slice(pos).find(s => s.kind === "q"));
+  const two = b.type === "conversation";
+  $("screen").innerHTML = `
+    <h2>${esc(TYPE_NAMES[b.type])}</h2>
+    ${b.type !== "choose" && b.intro ? `<p class="muted">${esc(b.intro)}</p>` : ""}
+    <div class="speaker"><div class="avatar" id="av1"></div>${two ? '<div class="avatar" id="av2"></div>' : ""}
+      <div class="bars" id="bars"><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="progress"><div id="prog"></div></div>
+    <div class="row"><span class="muted" id="status">The recording plays only once.</span><button id="play">▶ Play</button></div>`;
+  const audio = new Audio(b.audio);
+  current = audio;
+  audio.preload = "auto";
+  $("play").onclick = () => {
+    $("play").disabled = true;
+    $("status").textContent = "Listening…";
+    ["av1", "av2"].forEach(id => $(id) && $(id).classList.add("on"));
+    $("bars").classList.add("on");
+    audio.play().catch(e => { $("status").textContent = "The audio could not be played: " + e.message; $("play").disabled = false; });
+  };
+  audio.ontimeupdate = () => { if (audio.duration) $("prog").style.width = (100 * audio.currentTime / audio.duration) + "%"; };
+  audio.onended = () => { if (current !== audio) return; current = null; $("bars").classList.remove("on"); setTimeout(next, 600); };
+  audio.onerror = () => { $("status").textContent = `Missing audio file ${b.audio}.`; };
+}
+
+function questionScreen(st) {
+  $("hQ").textContent = qHeader(st);
+  const q = st.q;
+  $("screen").innerHTML = `
+    <p class="stem">${esc(q.stem)}</p>
+    <div class="options">${q.options.map((o, i) => `<label><input type="radio" name="opt" value="${LETTERS[i]}">
+      <span class="letter">${LETTERS[i]}.</span><span>${esc(o)}</span></label>`).join("")}</div>
+    <div class="row"><span class="muted">There is no going back after <i>Next</i>.</span><button id="nx" disabled>Next</button></div>`;
+  document.querySelectorAll("input[name=opt]").forEach(r => r.onchange = () => { $("nx").disabled = false; });
+  $("nx").onclick = () => {
+    answers[st.n] = document.querySelector("input[name=opt]:checked").value;
+    next();
+  };
+}
+
+function results() {
+  finished = true;
+  deadline = null;
+  window.onbeforeunload = null;
+  const secs = Math.round((Date.now() - started) / 1000);
+  const qs = steps.filter(s => s.kind === "q");
+  const scoredQs = qs.filter(s => !s.q.unscored);
+  const byType = {}, byQType = {};
+  let raw = 0;
+  scoredQs.forEach(s => {
+    const ok = answers[s.n] === s.q.key;
+    raw += ok ? 1 : 0;
+    const t = byType[s.block.type] || (byType[s.block.type] = [0, 0]);
+    t[0] += ok ? 1 : 0; t[1] += 1;
+    if (s.q.qtype) { const u = byQType[s.q.qtype] || (byQType[s.q.qtype] = [0, 0]); u[0] += ok ? 1 : 0; u[1] += 1; }
+  });
+  const max = scoredQs.length;
+  let band, cefr, how;
+  if (DATA.conversion) {
+    const row = DATA.conversion.find(([r]) => raw >= r) || DATA.conversion[DATA.conversion.length - 1];
+    [band, cefr] = [row[1], row[2]];
+    how = (DATA.conversion_note || "the test's own conversion table") + ". The real test is adaptive.";
+  } else {
+    band = BAND.find(([min]) => Math.round(raw * 30 / max) >= min)[1];
+    cefr = CEFR(band);
+    how = `Rough estimate: ${raw}/${max} scaled to 0–30, then read from ETS's Table 3 (Listening). The real test is adaptive and scored differently.`;
+  }
+  const unscoredOk = qs.filter(s => s.q.unscored && answers[s.n] === s.q.key).length;
+  const unscoredN = qs.length - max;
+  const code = `${DATA.id} | raw ${raw}/${max}${unscoredN ? ` (+ unscored ${unscoredOk}/${unscoredN})` : ""} | band ${band} (${cefr}) | ${Math.floor(secs / 60)} min | ` +
+               qs.map(s => `${s.label}${answers[s.n] || "-"}${s.q.unscored ? "*" : ""}`).join(" ");
+  const short = t => TYPE_NAMES[t].replace("Listen to an ", "").replace("Listen to a ", "").replace("Listen and ", "");
+  $("hLeft").textContent = "Listening · Results";
+  $("hQ").textContent = "";
+  $("hTime").textContent = "";
+  $("screen").innerHTML = `
+    <h2>Result</h2>
+    <div class="big">${raw} / ${max}</div>
+    <p>Listening band: <b>${band}</b> (${cefr}). <span class="muted">${how}</span></p>
+    ${unscoredN ? `<p class="muted">Unscored questions (marked *): ${unscoredOk} / ${unscoredN} correct. They do not count, as on the real test.</p>` : ""}
+    <table><tr><th>Task type</th><th>Correct</th></tr>
+      ${Object.entries(byType).map(([t, [a, n]]) => `<tr><td>${TYPE_NAMES[t]}</td><td>${a} / ${n}</td></tr>`).join("")}</table>
+    ${Object.keys(byQType).length ? `<table style="margin-top:12px"><tr><th>Question type (ETS)</th><th>Correct</th></tr>
+      ${Object.entries(byQType).map(([t, [a, n]]) => `<tr><td>${esc(t)}</td><td>${a} / ${n}</td></tr>`).join("")}</table>` : ""}
+    <h2 style="margin-top:24px">Send this to your coach</h2>
+    <pre id="code">${esc(code)}</pre>
+    <div class="row"><button class="secondary" id="copy">Copy</button><button class="secondary" id="dl">Download .json</button></div>
+    <h2 style="margin-top:24px">Your answers</h2>
+    <table><tr><th>#</th><th>Task</th><th>Yours</th><th>Correct</th><th></th></tr>
+      ${qs.map(s => {
+        const ok = answers[s.n] === s.q.key;
+        return `<tr><td>${s.label}${s.q.unscored ? "*" : ""}</td><td>${short(s.block.type)}${s.q.qtype ? ` · ${esc(s.q.qtype)}` : ""}
+        <div class="muted">${esc(s.q.stem === "Choose the best response." ? "" : s.q.stem)}</div>
+        ${s.q.explanation ? `<details><summary>Explanation</summary><div class="muted" style="white-space:pre-line">${esc(s.q.explanation)}</div></details>` : ""}</td>
+        <td>${answers[s.n] || "–"}</td><td>${s.q.key}</td><td class="${ok ? "ok" : "no"}">${ok ? "✓" : "✗"}</td></tr>`;
+      }).join("")}</table>
+    <details><summary>Transcripts (after the test)</summary>
+      ${DATA.stages.flatMap(st => st.blocks).map(b => `<p><b>${b.id}</b> · ${TYPE_NAMES[b.type]}<br>${
+        b.transcript ? esc(b.transcript).replace(/\n/g, "<br>")
+        : (b.intro ? `<i>Narrator: ${esc(b.intro)}</i><br>` : "") + (b.type === "choose" ? esc(b.prompt)
+          : b.type === "conversation" ? b.turns.map(t => `<b>${t[0]}:</b> ${esc(t[2])}`).join("<br>") : esc(b.text))}</p>`).join("")}
+    </details>`;
+  $("copy").onclick = () => navigator.clipboard.writeText(code).then(() => { $("copy").textContent = "Copied"; });
+  $("dl").onclick = () => {
+    const blob = new Blob([JSON.stringify({ id: DATA.id, raw, total: max, band, cefr, seconds: secs,
+      answers: Object.fromEntries(qs.map(s => [s.label, answers[s.n] || null])), byType, byQType }, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${DATA.id}-result.json`;
+    a.click();
+  };
+}
+
+intro();
+</script>
+</body>
+</html>

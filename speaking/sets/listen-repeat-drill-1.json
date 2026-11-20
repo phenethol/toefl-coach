@@ -1,0 +1,36 @@
+{
+  "id": "listen-repeat-drill-1",
+  "title": "Listen and Repeat drill 1",
+  "narrator": "am_michael",
+  "listen_repeat_parts": [
+    {
+      "intro": "You are training to help new students at the university's student services center. Listen to the coordinator and repeat what she says. Repeat only once.",
+      "voice": "af_heart",
+      "scene": "campus",
+      "sentences": [
+        {"spot": "Front Desk", "text": "Please take a number at the front desk."},
+        {"spot": "Careers", "text": "The career office is open until five."},
+        {"spot": "ID Office", "text": "Students can't pick up their ID cards without a signed form."},
+        {"spot": "Housing", "text": "The housing team answers questions about rent and room changes."},
+        {"spot": "Advising", "text": "You can book a meeting with an adviser on the portal."},
+        {"spot": "Study Lounge", "text": "The study lounge on the second floor offers free coffee, printing, and quiet rooms for group work."},
+        {"spot": "Main Office", "text": "Students who miss the registration deadline must submit a late request to the main office."}
+      ]
+    },
+    {
+      "intro": "You are learning to assist visitors at the university's chemistry laboratory. Listen to the lab manager and repeat what he says. Repeat only once.",
+      "voice": "bm_george",
+      "scene": "room",
+      "sentences": [
+        {"spot": "Safety", "text": "Safety glasses must be worn at all times."},
+        {"spot": "Lockers", "text": "Coats and bags go in the lockers by the door."},
+        {"spot": "Sink", "text": "Never pour chemicals down the sink without asking first."},
+        {"spot": "Fume Hood", "text": "The fume hood removes harmful gases from the air you breathe."},
+        {"spot": "Office", "text": "Report any spill to the lab manager right away."},
+        {"spot": "Eyewash", "text": "Rinse your eyes at the eyewash station for at least fifteen minutes if chemicals get in them."},
+        {"spot": "Storage", "text": "Students who finish early can clean their equipment and return it to the storage room."}
+      ]
+    }
+  ],
+  "outro": "This is the end of the Listen and Repeat practice."
+}

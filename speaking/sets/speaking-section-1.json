@@ -1,0 +1,30 @@
+{
+  "id": "speaking-section-1",
+  "title": "Speaking section, practice 1",
+  "narrator": "am_michael",
+  "listen_repeat": {
+    "intro": "You are learning to give campus tours to new students. Listen to the tour guide and repeat what she says. Repeat only once.",
+    "voice": "af_bella",
+    "sentences": [
+      {"spot": "Main Gate", "text": "Welcome to the main campus, everyone."},
+      {"spot": "Fountain", "text": "The library is straight ahead, past the fountain."},
+      {"spot": "Library", "text": "You can borrow laptops for free at the library's front desk."},
+      {"spot": "Dining Hall", "text": "The dining hall on your left is open until nine."},
+      {"spot": "Lawn", "text": "Please stay on the paths and keep off the newly planted grass."},
+      {"spot": "Student Center", "text": "If you have questions about housing, the student center can help you."},
+      {"spot": "Science Building", "text": "The science building, which opened last year, has labs that first-year students can use."}
+    ]
+  },
+  "interview": {
+    "topic": "free-time",
+    "intro": "You have agreed to take part in a research study about how young adults spend their free time. You will have a short online interview with a researcher. The researcher will ask you some questions.",
+    "voice": "af_heart",
+    "questions": [
+      "Thank you for speaking with me today. To begin, I'd like you to think about a typical weekend in the past month. What did you do in your free time? Who did you spend it with?",
+      "Great. People relax in very different ways. Some people recharge by spending time alone, while others feel more energized after being with friends. Which describes you better? Why do you think that is?",
+      "OK. Next, I'd like to ask your opinion. Some people believe that hobbies should have a practical purpose, for example, learning a skill that could help with a future career. Do you agree that people should choose hobbies that are useful in this way? Why or why not?",
+      "Good points. Let me ask you one final question. For some time now, researchers have been interested in how much free time students really have. Some universities have started limiting homework on weekends so that students can rest. Do you think universities should do this? Why or why not?"
+    ]
+  },
+  "outro": "This is the end of the Speaking section."
+}
